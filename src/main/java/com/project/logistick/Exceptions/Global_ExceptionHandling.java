@@ -19,6 +19,8 @@ import com.project.logistick.Entitiesclasses.Loading;
 import com.project.logistick.Entitiesclasses.Order;
 import com.project.logistick.Entitiesclasses.Truck;
 import com.project.logistick.Entitiesclasses.Unloading;
+import com.project.logistick.login.AdminLogin;
+import com.project.logistick.login.UserLogin;
 
 
 @RestControllerAdvice
@@ -146,7 +148,7 @@ public class Global_ExceptionHandling {
 	public ResponseEntity<ResponceStucture<Order>> handleOrderNotPending() {
 		ResponceStucture<Order> rs=new ResponceStucture<Order>();
 		rs.setCode(HttpStatus.NOT_FOUND.value());
-		rs.setMessage("Order Details with id Status is  in  Pending");
+		rs.setMessage("Order is not in  Pending Status");
 		rs.setData(null);
 		return new ResponseEntity<ResponceStucture<Order>>(rs, HttpStatus.NOT_FOUND);
 		
@@ -155,7 +157,7 @@ public class Global_ExceptionHandling {
 	public ResponseEntity<ResponceStucture<Order>> handleOrderCanceled() {
 		ResponceStucture<Order> rs=new ResponceStucture<Order>();
 		rs.setCode(HttpStatus.NOT_FOUND.value());
-		rs.setMessage("Order was cancled by cumstomer");
+		rs.setMessage("Order was cancled by customer");
 		rs.setData(null);
 		return new ResponseEntity<ResponceStucture<Order>>(rs, HttpStatus.NOT_FOUND);
 		
@@ -220,6 +222,35 @@ public class Global_ExceptionHandling {
 		return new ResponseEntity<ResponceStucture<Unloading>>(rs, HttpStatus.NOT_FOUND);
 		
 	}
+	//exception for Admin Login
+		@ExceptionHandler(exception=AdminDetailsAlreadyExist.class)
+		public ResponseEntity<ResponceStucture<AdminLogin>> handleAdminFound() {
+			ResponceStucture<AdminLogin> rs=new ResponceStucture<AdminLogin>();
+			rs.setCode(HttpStatus.NOT_FOUND.value());
+			rs.setMessage("Admin already exist");
+			rs.setData(null);
+			return new ResponseEntity<ResponceStucture<AdminLogin>>(rs,HttpStatus.NOT_FOUND);
+	}
+		//exception for Admin  Not found
+				@ExceptionHandler(exception=AdminDetailsNotFound.class)
+				public ResponseEntity<ResponceStucture<AdminLogin>> handleLoginNotFound() {
+					ResponceStucture<AdminLogin> rs=new ResponceStucture<AdminLogin>();
+					rs.setCode(HttpStatus.NOT_FOUND.value());
+					rs.setMessage("Admin details not exist");
+					rs.setData(null);
+					return new ResponseEntity<ResponceStucture<AdminLogin>>(rs,HttpStatus.NOT_FOUND);
+			}
+			
+				//exception for User  Not found
+				@ExceptionHandler(exception=UserDetailsNotFound.class)
+				public ResponseEntity<ResponceStucture<UserLogin>> handleUserNotFound() {
+					ResponceStucture<UserLogin> rs=new ResponceStucture<UserLogin>();
+					rs.setCode(HttpStatus.NOT_FOUND.value());
+					rs.setMessage("User details not exist");
+					rs.setData(null);
+					return new ResponseEntity<ResponceStucture<UserLogin>>(rs,HttpStatus.NOT_FOUND);
+			}
+				
 	//Exception for invalid data entered
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ResponceStucture<Map<String, String>>> handleMethodArgumentNotException(MethodArgumentNotValidException ex)
@@ -236,5 +267,6 @@ public class Global_ExceptionHandling {
 		responce.setData(errormap);
 		return new ResponseEntity<ResponceStucture<Map<String, String>>>(responce,HttpStatus.OK);
 	}
+	
 	
 }

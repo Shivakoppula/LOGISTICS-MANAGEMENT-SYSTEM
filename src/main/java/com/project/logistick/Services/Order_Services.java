@@ -131,7 +131,10 @@ public class Order_Services {
 			odr.setCarrier(null);
 			//Removing cargo
 			odr.setCargo(null);
-			
+//			Cargo cr=crepo.findById(id).get();
+//			crepo.delete(cr);
+//		crepo.delete(crepo.findById(id).get());
+//			crepo.save(cr);
 			orderepo.save(odr);
 			rs.setCode(HttpStatus.OK.value());
 			rs.setMessage("cancling the order with details of   id "+id);

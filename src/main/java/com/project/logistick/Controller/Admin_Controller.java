@@ -1,5 +1,6 @@
 package com.project.logistick.Controller;
 
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,12 +19,16 @@ import com.project.logistick.Entitiesclasses.Order;
 import com.project.logistick.Entitiesclasses.Truck;
 import com.project.logistick.Entitiesclasses.Unloading;
 import com.project.logistick.Services.Address_Services;
+import com.project.logistick.Services.AdminLogin_service;
 import com.project.logistick.Services.Carrier_Services;
 import com.project.logistick.Services.Driver_Services;
 import com.project.logistick.Services.Loading_Services;
 import com.project.logistick.Services.Order_Services;
 import com.project.logistick.Services.Truck_Services;
 import com.project.logistick.Services.Unloading_Services;
+import com.project.logistick.login.AdminLogin;
+import com.project.logistick.login.UserLogin;
+
 import jakarta.validation.Valid;
 
 @RestController
@@ -187,11 +192,47 @@ public class Admin_Controller {
 		return unloaddetails.findDelivery(id);
 	}
 	
-	@DeleteMapping("cancle/{id}")
+	@DeleteMapping("/cancle/{id}")
 	public ResponseEntity<ResponceStucture<Unloading>> cancleDetails(@PathVariable int id)
 	{
 		return unloaddetails.cancleDetails(id);
 	}
+	
+	//admin login details
+	
+	@Autowired
+	AdminLogin_service adminService;
+	@PostMapping("/login")
+	public ResponseEntity<ResponceStucture<AdminLogin>> adminLogin(@RequestBody @Valid AdminLogin admin) {
+		return adminService.save(admin);
+	}
+	
+	@GetMapping("/admindetails/{phone}/{password}")
+	public ResponseEntity<ResponceStucture<AdminLogin>> getAdmin(@PathVariable long phone,@PathVariable String password) {
+		return adminService.getAdmin(phone,password);
+	}
+	
+	@PutMapping("/changepassword/{phone}/{password}/{newpassword}")
+	public ResponseEntity<ResponceStucture<AdminLogin>> change(@PathVariable long phone, @PathVariable String password,@PathVariable String newpassword) {
+		return adminService.change(phone,password,newpassword);
+	}
+	@DeleteMapping("/deletephone/{phone}")
+	public void delete(@PathVariable long phone) {
+		adminService.delete(phone);
+	}
+	
+	
+	//controlling user by admin
+	@GetMapping("/allusers/{phone}")
+	 public List<UserLogin> getUsersByAdmin(@PathVariable long phone) {
+		return adminService.getusers(phone);
+	}
+
+	@DeleteMapping("/deletinguser/{email}")
+	public ResponseEntity<ResponceStucture<UserLogin>> deletinguser(@PathVariable String email) {
+		return adminService.deletedetails(email);
+	}
+	
 	
 
 }

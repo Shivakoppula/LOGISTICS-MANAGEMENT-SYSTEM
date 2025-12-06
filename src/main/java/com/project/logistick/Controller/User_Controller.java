@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.project.logistick.DTO.OrderDto;
 import com.project.logistick.DTO.ResponceStucture;
@@ -15,11 +16,12 @@ import com.project.logistick.Entitiesclasses.Cargo;
 import com.project.logistick.Entitiesclasses.Order;
 import com.project.logistick.Services.Cargo_Services;
 import com.project.logistick.Services.Order_Services;
+import com.project.logistick.Services.UserService;
+import com.project.logistick.login.UserLogin;
 
 import jakarta.validation.Valid;
 
 @RestController
-//@RequestMapping("/user")
 public class User_Controller {
 	
 //	//cargo crud operations
@@ -66,5 +68,28 @@ public class User_Controller {
 	{
 		return orderservice.cancleOrder(id);
 	}
+	
+	//user details of login
+	@Autowired
+	UserService userservice;
+	
+	@PostMapping("/save")
+	public ResponseEntity<ResponceStucture<UserLogin>> save(@RequestBody @Valid UserLogin user) {
+	  return userservice.saveUser(user);
+	}
+	
+	@GetMapping("/details/{email}")
+	public ResponseEntity<ResponceStucture<UserLogin>> getDetails(@PathVariable String email) {
+		return userservice.getdetails(email);
+	}
+	@PutMapping("/update/{oldemail}/{newemail}")
+	public ResponseEntity<ResponceStucture<UserLogin>> updateDetails(@PathVariable String oldemail,@PathVariable String newemail) {
+	   return userservice.updatedetails(oldemail,newemail);
+	}
+	@DeleteMapping("/delete/{email}")
+	public ResponseEntity<ResponceStucture<UserLogin>> delete(@PathVariable String email) {
+		return userservice.deletedetails(email);
+	}
+	
 
 }
