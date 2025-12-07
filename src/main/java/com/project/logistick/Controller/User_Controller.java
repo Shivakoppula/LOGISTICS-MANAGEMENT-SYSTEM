@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.project.logistick.DTO.OrderDto;
 import com.project.logistick.DTO.ResponceStucture;
 import com.project.logistick.Entitiesclasses.Cargo;
@@ -78,17 +78,14 @@ public class User_Controller {
 	  return userservice.saveUser(user);
 	}
 	
-	@GetMapping("/details/{email}")
-	public ResponseEntity<ResponceStucture<UserLogin>> getDetails(@PathVariable String email) {
-		return userservice.getdetails(email);
+	@GetMapping("/details/{email}/{password}")
+	public ResponseEntity<ResponceStucture<UserLogin>> getDetails(@PathVariable String email,@PathVariable String password) {
+	  return userservice.getdetails(email,password);
 	}
+	
 	@PutMapping("/update/{oldemail}/{newemail}")
 	public ResponseEntity<ResponceStucture<UserLogin>> updateDetails(@PathVariable String oldemail,@PathVariable String newemail) {
 	   return userservice.updatedetails(oldemail,newemail);
-	}
-	@DeleteMapping("/delete/{email}")
-	public ResponseEntity<ResponceStucture<UserLogin>> delete(@PathVariable String email) {
-		return userservice.deletedetails(email);
 	}
 	
 

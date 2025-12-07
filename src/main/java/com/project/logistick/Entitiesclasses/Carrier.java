@@ -13,7 +13,7 @@ import jakarta.validation.constraints.Size;
 @Entity
 public class Carrier {
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+//	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private int id;
     @Size(min=2,max=15)
 	@NotNull
@@ -26,9 +26,9 @@ public class Carrier {
 	@NotNull
 	private long contact;
 
-	public Carrier( String name, String email, long contact) {
+	public Carrier(int id, String name, String email, long contact) {
 		super();
-//		this.id = id;
+		this.id = id;
 		this.name = name;
 		this.email = email;
 		this.contact = contact;

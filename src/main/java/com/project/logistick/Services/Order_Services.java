@@ -1,6 +1,7 @@
 package com.project.logistick.Services;
 
 import java.text.SimpleDateFormat;
+//import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -165,6 +166,7 @@ public class Order_Services {
 		
 	 Order oder=orderepo.findById(id).get();
 	 Truck tr=trepo.findById(truckid).get();
+	 
 	 int truckcapacity=tr.getCapacity();
 	 int orderweight=oder.getCargo().getWeight()*oder.getCargo().getCount();
 	 

@@ -1,7 +1,5 @@
 package com.project.logistick.Services;
 
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,17 +24,17 @@ public class UserService {
 			  userrepo.save(user);
 				
 				rs.setCode(HttpStatus.OK.value());
-				rs.setMessage("Admin login details of id "+user.getEmail()+" saved");
+				rs.setMessage("Customer login with  "+user.getEmail()+"successfully");
 				rs.setData(user);
 			
 		}
 		return new ResponseEntity<ResponceStucture<UserLogin>>(rs,HttpStatus.OK);
 	}
-	public ResponseEntity<ResponceStucture<UserLogin>> getdetails(String email) {
+	public ResponseEntity<ResponceStucture<UserLogin>> getdetails(String email,String password) {
 		UserLogin ul=userrepo.findByEmail(email);
-		if(ul!=null) {
+		if(ul!=null && ul.getEmail().equals(email) && ul.getPassword().equals(password)) {
 			rs.setCode(HttpStatus.OK.value());
-			rs.setMessage("Admin login details of id "+ul.getEmail()+" saved");
+			rs.setMessage("User login succesfully with details of"+ul.getEmail());
 			rs.setData(ul);
 			
 		}
@@ -52,7 +50,7 @@ public class UserService {
 			ul.setEmail(newemail);
 			userrepo.save(ul);
 			rs.setCode(HttpStatus.OK.value());
-			rs.setMessage("Admin login details of id "+ul.getEmail()+" saved");
+			rs.setMessage("Username "+ul.getEmail()+"changed successfully");
 			rs.setData(ul);
 			
 		}
@@ -63,22 +61,5 @@ public class UserService {
 		
 		
 	}
-	public ResponseEntity<ResponceStucture<UserLogin>> deletedetails(String email) {
-		UserLogin ul=userrepo.findByEmail(email);
-		if(ul!=null) {
-			
-			userrepo.delete(ul);
-			rs.setCode(HttpStatus.OK.value());
-			rs.setMessage("Admin login details of id "+ul.getEmail()+" saved");
-			rs.setData(ul);
-			
-		}
-		else {
-			throw new AdminDetailsNotFound();
-		}
-		return new ResponseEntity<ResponceStucture<UserLogin>>(rs,HttpStatus.OK);
-		
-		
-	}
-
+	
 }

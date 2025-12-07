@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logistics Login Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .role-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .role-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            color: #666;
+        }
+
+        .role-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .role-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: #999;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: #f5f5f5;
+            color: #666;
+        }
+
+        .btn-secondary:hover {
+            background: #e0e0e0;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            background: #e0e0e0;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 10px;
+            color: #999;
+            font-size: 12px;
+            relative: position;
+        }
+
+        .toggle-link {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .toggle-link a {
+            color: #667eea;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .toggle-link a:hover {
+            text-decoration: underline;
+        }
+
+        .alert {
+            padding: 12px 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .password-toggle {
+            position: relative;
+        }
+
+        .password-toggle .toggle-icon {
+            position: absolute;
+            right: 12px;
+            top: 38px;
+            cursor: pointer;
+            color: #999;
+            font-size: 16px;
+        }
+
+        .change-password-section {
+            display: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .change-password-section.show {
+            display: block;
+        }
+
+        @media (max-width: 480px) {
+            .login-box {
+                padding: 30px 20px;
+            }
+
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="login-box">
+            <div class="header">
+                <h1>🚚 Logistics Portal</h1>
+                <p>Sign in to your account</p>
+            </div>
+
+            <!-- Alert Messages -->
+            <div id="alert" class="alert"></div>
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+            </div>
+
+            <!-- Role Selection -->
+            <div class="role-selector">
+                <button class="role-btn active" data-role="customer" onclick="selectRole('customer')">
+                    👤 Customer
+                </button>
+                <button class="role-btn" data-role="admin" onclick="selectRole('admin')">
+                    👨‍💼 Admin
+                </button>
+            </div>
+
+            <!-- CUSTOMER LOGIN FORM -->
+            <div id="customer-login" class="form-section active">
+                <h3 style="color: #333; font-size: 18px; margin-bottom: 20px;">Customer Login</h3>
+                
+                <form id="customerLoginForm" onsubmit="handleCustomerLogin(event)">
+                    <div class="form-group">
+                        <label for="customerEmail">Email Address</label>
+                        <input type="email" id="customerEmail" name="email" placeholder="Enter your email" required>
+                    </div>
+                    <div class="form-group password-toggle">
+                        <label for="customerPassword">Password</label>
+                        <input type="password" id="customerPassword" name="password" placeholder="Enter your password" required>
+                        <span class="toggle-icon" onclick="togglePassword('customerPassword')">👁️</span>
+                    </div>
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </div>
+                </form>
+
+                <div class="divider"><span>OR</span></div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="toggleCustomerForms('signup')">Create Account</button>
+                </div>
+
+                <div id="customer-signup" style="display: none; margin-top: 20px;">
+                    <h3 style="color: #333; font-size: 16px; margin-bottom: 15px;">Create New Account</h3>
+                    <form id="customerSignupForm" onsubmit="handleCustomerSignup(event)">
+                        <div class="form-group">
+                            <label for="newCustomerEmail">Email Address</label>
+                            <input type="email" id="newCustomerEmail" name="email" placeholder="Enter your email" required>
+                        </div>
+                        <div class="form-group password-toggle">
+                            <label for="newCustomerPassword">Password</label>
+                            <input type="password" id="newCustomerPassword" name="password" placeholder="Create a password" required>
+                            <span class="toggle-icon" onclick="togglePassword('newCustomerPassword')">👁️</span>
+                        </div>
+                        <div class="button-group">
+                            <button type="submit" class="btn btn-primary">Sign Up</button>
+                            <button type="button" class="btn btn-secondary" onclick="toggleCustomerForms('login')">Back</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="toggle-link" style="margin-top: 25px;">
+                    Want to update your email? <a onclick="toggleCustomerForms('update')">Update Email</a>
+                </div>
+
+                <div id="customer-update" style="display: none; margin-top: 20px;">
+                    <h3 style="color: #333; font-size: 16px; margin-bottom: 15px;">Update Email Address</h3>
+                    <form id="customerUpdateForm" onsubmit="handleCustomerUpdate(event)">
+                        <div class="form-group">
+                            <label for="oldEmail">Old Email Address</label>
+                            <input type="email" id="oldEmail" name="oldEmail" placeholder="Enter your current email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="newEmail">New Email Address</label>
+                            <input type="email" id="newEmail" name="newEmail" placeholder="Enter your new email" required>
+                        </div>
+                        <div class="button-group">
+                            <button type="submit" class="btn btn-primary">Update</button>
+                            <button type="button" class="btn btn-secondary" onclick="toggleCustomerForms('login')">Back</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ADMIN LOGIN FORM -->
+            <div id="admin-login" class="form-section">
+                <h3 style="color: #333; font-size: 18px; margin-bottom: 20px;">Admin Login</h3>
+
+                <form id="adminLoginForm" onsubmit="handleAdminLogin(event)">
+                    <div class="form-group">
+                        <label for="adminPhone">Phone Number</label>
+                        <input type="tel" id="adminPhone" name="phone" placeholder="Enter your phone number" required>
+                    </div>
+                    <div class="form-group password-toggle">
+                        <label for="adminPassword">Password</label>
+                        <input type="password" id="adminPassword" name="password" placeholder="Enter your password" required>
+                        <span class="toggle-icon" onclick="togglePassword('adminPassword')">👁️</span>
+                    </div>
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </div>
+                </form>
+
+                <div class="divider"><span>OR</span></div>
+
+                <div class="button-group">
+                    <button class="btn btn-secondary" onclick="toggleAdminForms('signup')">Create Admin Account</button>
+                </div>
+
+                <div id="admin-signup" style="display: none; margin-top: 20px;">
+                    <h3 style="color: #333; font-size: 16px; margin-bottom: 15px;">Create New Admin Account</h3>
+                    <form id="adminSignupForm" onsubmit="handleAdminSignup(event)">
+                        <div class="form-group">
+                            <label for="newAdminPhone">Phone Number</label>
+                            <input type="tel" id="newAdminPhone" name="phone" placeholder="Enter phone number" required>
+                        </div>
+                        <div class="form-group password-toggle">
+                            <label for="newAdminPassword">Password</label>
+                            <input type="password" id="newAdminPassword" name="password" placeholder="Create a password" required>
+                            <span class="toggle-icon" onclick="togglePassword('newAdminPassword')">👁️</span>
+                        </div>
+                        <div class="button-group">
+                            <button type="submit" class="btn btn-primary">Sign Up</button>
+                            <button type="button" class="btn btn-secondary" onclick="toggleAdminForms('login')">Back</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="toggle-link" style="margin-top: 25px;">
+                    Need to change your password? <a onclick="toggleAdminForms('changePassword')">Change Password</a>
+                </div>
+
+                <div id="admin-changePassword" style="display: none; margin-top: 20px;">
+                    <h3 style="color: #333; font-size: 16px; margin-bottom: 15px;">Change Password</h3>
+                    <form id="adminChangePasswordForm" onsubmit="handleAdminChangePassword(event)">
+                        <div class="form-group">
+                            <label for="changePhone">Phone Number</label>
+                            <input type="tel" id="changePhone" name="phone" placeholder="Enter your phone number" required>
+                        </div>
+                        <div class="form-group password-toggle">
+                            <label for="oldPassword">Current Password</label>
+                            <input type="password" id="oldPassword" name="oldPassword" placeholder="Enter your current password" required>
+                            <span class="toggle-icon" onclick="togglePassword('oldPassword')">👁️</span>
+                        </div>
+                        <div class="form-group password-toggle">
+                            <label for="newPasswordChange">New Password</label>
+                            <input type="password" id="newPasswordChange" name="newPassword" placeholder="Enter your new password" required>
+                            <span class="toggle-icon" onclick="togglePassword('newPasswordChange')">👁️</span>
+                        </div>
+                        <div class="button-group">
+                            <button type="submit" class="btn btn-primary">Change Password</button>
+                            <button type="button" class="btn btn-secondary" onclick="toggleAdminForms('login')">Back</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:8080';
+
+        // Role Selection
+        function selectRole(role) {
+            document.querySelectorAll('.role-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[data-role="${role}"]`).classList.add('active');
+
+            document.querySelectorAll('.form-section').forEach(section => section.classList.remove('active'));
+            document.getElementById(`${role}-login`).classList.add('active');
+
+            // Reset all forms to login state
+            if (role === 'customer') {
+                toggleCustomerForms('login');
+            } else if (role === 'admin') {
+                toggleAdminForms('login');
+            }
+        }
+
+        // Toggle Password Visibility
+        function togglePassword(fieldId) {
+            const field = document.getElementById(fieldId);
+            const isPassword = field.type === 'password';
+            field.type = isPassword ? 'text' : 'password';
+        }
+
+        // Show Alert Message
+        function showAlert(message, type = 'info') {
+            const alertEl = document.getElementById('alert');
+            alertEl.textContent = message;
+            alertEl.className = `alert show alert-${type}`;
+            setTimeout(() => alertEl.classList.remove('show'), 4000);
+        }
+
+        // Show/Hide Loading
+        function setLoading(show) {
+            document.getElementById('loading').classList.toggle('show', show);
+        }
+
+        // CUSTOMER FUNCTIONS
+        function toggleCustomerForms(form) {
+            const customerLoginForm = document.querySelector('#customer-login > form:first-of-type');
+            const customerDividerButton = document.querySelector('#customer-login .divider');
+            const customerCreateButton = document.querySelector('#customer-login .button-group');
+            const customerSignupDiv = document.getElementById('customer-signup');
+            const customerUpdateDiv = document.getElementById('customer-update');
+            
+            if (form === 'login') {
+                customerLoginForm.style.display = 'block';
+                customerDividerButton.style.display = 'block';
+                customerCreateButton.style.display = 'flex';
+                customerSignupDiv.style.display = 'none';
+                customerUpdateDiv.style.display = 'none';
+            } else if (form === 'signup') {
+                customerLoginForm.style.display = 'none';
+                customerDividerButton.style.display = 'none';
+                customerCreateButton.style.display = 'none';
+                customerSignupDiv.style.display = 'block';
+                customerUpdateDiv.style.display = 'none';
+            } else if (form === 'update') {
+                customerLoginForm.style.display = 'none';
+                customerDividerButton.style.display = 'none';
+                customerCreateButton.style.display = 'none';
+                customerSignupDiv.style.display = 'none';
+                customerUpdateDiv.style.display = 'block';
+            }
+        }
+
+        async function handleCustomerLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('customerEmail').value;
+            const password = document.getElementById('customerPassword').value;
+
+            setLoading(true);
+            try {
+                const response = await fetch(`${API_BASE_URL}/details/${email}/${password}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                console.log('Customer Login Response:', response.status, response.ok, data);
+                
+                // Check if response is successful (status 200 or 201)
+                if (response.ok) {
+                    // Store user email in localStorage
+                    if (data.data && data.data.email) {
+                        localStorage.setItem('userEmail', data.data.email);
+                    } else if (data.email) {
+                        localStorage.setItem('userEmail', data.email);
+                    } else {
+                        localStorage.setItem('userEmail', email);
+                    }
+                    
+                    showAlert(`Welcome back!`, 'success');
+                    document.getElementById('customerLoginForm').reset();
+                    console.log('Login successful, redirecting...');
+                    
+                    // Redirect immediately
+                    setTimeout(() => {
+                        window.location.href = '/customer-dashboard.html';
+                    }, 500);
+                } else {
+                    showAlert(data.message || 'Login failed', 'error');
+                    setLoading(false);
+                }
+            } catch (error) {
+                console.error('Customer Login Error:', error);
+                showAlert('Error: ' + error.message, 'error');
+                setLoading(false);
+            }
+        }
+
+        async function handleCustomerSignup(event) {
+            event.preventDefault();
+            const email = document.getElementById('newCustomerEmail').value;
+            const password = document.getElementById('newCustomerPassword').value;
+
+            setLoading(true);
+            try {
+                const response = await fetch(`${API_BASE_URL}/save`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+                if (response.ok && (data.statusCode === 201 || data.statusCode === 200)) {
+                    showAlert('Account created successfully! Please login.', 'success');
+                    document.getElementById('customerSignupForm').reset();
+                    setTimeout(() => toggleCustomerForms('login'), 1500);
+                } else {
+                    showAlert(data.message || 'Signup failed', 'error');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        async function handleCustomerUpdate(event) {
+            event.preventDefault();
+            const oldEmail = document.getElementById('oldEmail').value;
+            const newEmail = document.getElementById('newEmail').value;
+
+            setLoading(true);
+            try {
+                const response = await fetch(`${API_BASE_URL}/update/${oldEmail}/${newEmail}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                if (response.ok && (data.statusCode === 201 || data.statusCode === 200)) {
+                    showAlert('Email updated successfully!', 'success');
+                    document.getElementById('customerUpdateForm').reset();
+                    setTimeout(() => toggleCustomerForms('login'), 1500);
+                } else {
+                    showAlert(data.message || 'Update failed', 'error');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        // ADMIN FUNCTIONS
+        function toggleAdminForms(form) {
+            const adminLoginForm = document.querySelector('#admin-login > form:first-of-type');
+            const adminDividerButton = document.querySelector('#admin-login .divider');
+            const adminCreateButton = document.querySelector('#admin-login .button-group');
+            const adminSignupDiv = document.getElementById('admin-signup');
+            const adminChangePasswordDiv = document.getElementById('admin-changePassword');
+            
+            if (form === 'login') {
+                adminLoginForm.style.display = 'block';
+                adminDividerButton.style.display = 'block';
+                adminCreateButton.style.display = 'flex';
+                adminSignupDiv.style.display = 'none';
+                adminChangePasswordDiv.style.display = 'none';
+            } else if (form === 'signup') {
+                adminLoginForm.style.display = 'none';
+                adminDividerButton.style.display = 'none';
+                adminCreateButton.style.display = 'none';
+                adminSignupDiv.style.display = 'block';
+                adminChangePasswordDiv.style.display = 'none';
+            } else if (form === 'changePassword') {
+                adminLoginForm.style.display = 'none';
+                adminDividerButton.style.display = 'none';
+                adminCreateButton.style.display = 'none';
+                adminSignupDiv.style.display = 'none';
+                adminChangePasswordDiv.style.display = 'block';
+            }
+        }
+
+        async function handleAdminLogin(event) {
+            event.preventDefault();
+            const phone = document.getElementById('adminPhone').value;
+            const password = document.getElementById('adminPassword').value;
+
+            setLoading(true);
+            try {
+                const response = await fetch(`${API_BASE_URL}/admindetails/${phone}/${password}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                console.log('Admin Login Response:', response.status, response.ok, data);
+                
+                // Check if response is successful (status 200 or 201)
+                if (response.ok) {
+                    // Store admin phone in localStorage
+                    if (data.data && data.data.phone) {
+                        localStorage.setItem('adminPhone', data.data.phone);
+                    } else if (data.phone) {
+                        localStorage.setItem('adminPhone', data.phone);
+                    } else {
+                        localStorage.setItem('adminPhone', phone);
+                    }
+                    
+                    showAlert('Admin login successful!', 'success');
+                    document.getElementById('adminLoginForm').reset();
+                    console.log('Admin login successful, redirecting...');
+                    
+                    // Redirect immediately
+                    setTimeout(() => {
+                        window.location.href = '/admin-dashboard.html';
+                    }, 500);
+                } else {
+                    showAlert(data.message || 'Admin login failed', 'error');
+                    setLoading(false);
+                }
+            } catch (error) {
+                console.error('Admin Login Error:', error);
+                showAlert('Error: ' + error.message, 'error');
+                setLoading(false);
+            }
+        }
+
+        async function handleAdminSignup(event) {
+            event.preventDefault();
+            const phone = document.getElementById('newAdminPhone').value;
+            const password = document.getElementById('newAdminPassword').value;
+
+            setLoading(true);
+            try {
+                const response = await fetch(`${API_BASE_URL}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ phone, password })
+                });
+
+                const data = await response.json();
+                if (response.ok && (data.statusCode === 201 || data.statusCode === 200)) {
+                    showAlert('Admin account created successfully! Please login.', 'success');
+                    document.getElementById('adminSignupForm').reset();
+                    setTimeout(() => toggleAdminForms('login'), 1500);
+                } else {
+                    showAlert(data.message || 'Admin signup failed', 'error');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        async function handleAdminChangePassword(event) {
+            event.preventDefault();
+            const phone = document.getElementById('changePhone').value;
+            const oldPassword = document.getElementById('oldPassword').value;
+            const newPassword = document.getElementById('newPasswordChange').value;
+
+            setLoading(true);
+            try {
+                const response = await fetch(`${API_BASE_URL}/changepassword/${phone}/${oldPassword}/${newPassword}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+                if (response.ok && (data.statusCode === 201 || data.statusCode === 200)) {
+                    showAlert('Password changed successfully!', 'success');
+                    document.getElementById('adminChangePasswordForm').reset();
+                    setTimeout(() => toggleAdminForms('login'), 1500);
+                } else {
+                    showAlert(data.message || 'Password change failed', 'error');
+                }
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            } finally {
+                setLoading(false);
+            }
+        }
+    </script>
+</body>
+</html>

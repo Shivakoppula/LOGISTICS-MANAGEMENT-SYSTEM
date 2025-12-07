@@ -72,10 +72,11 @@ public class Unloading_Services {
 			
 			ResponceStucture<Unloading> rs=new ResponceStucture<Unloading>();
 			if(loadopt.isPresent()) {
-				 unloadrepo.deleteById(id);
+				 
 					rs.setCode(HttpStatus.OK.value());
 					rs.setMessage("Deleting unloading address details with id "+id+" Deleted");
 					rs.setData(loadopt.get());
+					unloadrepo.deleteById(id);
 				
 			}
 			else

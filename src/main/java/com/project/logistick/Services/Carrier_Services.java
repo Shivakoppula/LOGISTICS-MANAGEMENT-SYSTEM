@@ -68,7 +68,7 @@ public class Carrier_Services {
 			if(cropt.isPresent()) {
 				 crrepo.deleteById(id);
 					rs.setCode(HttpStatus.OK.value());
-					rs.setMessage("Deleting Address details with id "+id+" Deleted");
+					rs.setMessage("Deleting Carrier details with id "+id+" Deleted");
 					rs.setData(cropt.get());
 				
 			}

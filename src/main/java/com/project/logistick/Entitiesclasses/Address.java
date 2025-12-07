@@ -12,7 +12,7 @@ import jakarta.validation.constraints.Size;
 @Entity
 public class Address {
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+//	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private int id;
 	@Size(min=2,max=20)
 	@NotNull
@@ -20,16 +20,16 @@ public class Address {
 	@Size(min=2,max=20)
 	@NotNull
 	private String city;
-	@Min(value=5)
-	@Max(value=8)
+//	@Min(value=5)
+//	@Max(value=8)
 	@NotNull
 	private int pincode;
 	@Size(min=2,max=20)
 	@NotNull
 	private String state;
-	public Address( String street, String city, int pincode, String state) {
+	public Address(int id, String street, String city, int pincode, String state) {
 		super();
-//		this.id = id;
+		this.id = id;
 		this.street = street;
 		this.city = city;
 		this.pincode = pincode;

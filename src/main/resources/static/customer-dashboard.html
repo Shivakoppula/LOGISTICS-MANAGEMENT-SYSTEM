@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Dashboard - Logistics Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h1 {
+            color: #333;
+            font-size: 24px;
+        }
+
+        .navbar .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .navbar .user-info p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .navbar .logout-btn {
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .navbar .logout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .dashboard {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .dashboard h2 {
+            color: #333;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .dashboard p {
+            color: #666;
+            font-size: 16px;
+            margin-bottom: 30px;
+            max-width: 500px;
+        }
+
+        .placeholder-content {
+            background: #f5f5f5;
+            padding: 60px;
+            border-radius: 10px;
+            border: 2px dashed #ddd;
+            margin: 20px 0;
+        }
+
+        .placeholder-content h3 {
+            color: #999;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .placeholder-content p {
+            color: #bbb;
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .dashboard {
+                padding: 20px;
+            }
+
+            .dashboard h2 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>🚚 Customer Dashboard</h1>
+        <div class="user-info">
+            <p id="userEmail">Welcome, Customer!</p>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="dashboard">
+            <h2>Welcome to Your Dashboard</h2>
+            <p>Your customer dashboard is ready. Additional features will be added here based on your requirements.</p>
+            
+            <div class="placeholder-content">
+                <h3>Dashboard Content Coming Soon</h3>
+                <p>This page will be populated with your customer features and data.</p>
+            </div>
+
+            <p style="margin-top: 30px; color: #999; font-size: 12px;">
+                You are logged in as: <span id="displayEmail" style="color: #667eea; font-weight: 600;">Loading...</span>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Get user email from localStorage
+        window.addEventListener('load', function() {
+            const userEmail = localStorage.getItem('userEmail');
+            if (userEmail) {
+                document.getElementById('userEmail').textContent = `Welcome, ${userEmail}`;
+                document.getElementById('displayEmail').textContent = userEmail;
+            } else {
+                // If no email found, redirect to login
+                window.location.href = '/login.html';
+            }
+        });
+
+        function logout() {
+            // Clear user data
+            localStorage.removeItem('userEmail');
+            // Redirect to login
+            window.location.href = '/login.html';
+        }
+    </script>
+</body>
+</html>
