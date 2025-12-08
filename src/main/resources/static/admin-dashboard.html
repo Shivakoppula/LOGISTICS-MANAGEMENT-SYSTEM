@@ -374,6 +374,7 @@
                 <button class="main-menu-btn" onclick="showMenu('address')">📍 Address</button>
                 <button class="main-menu-btn" onclick="showMenu('loading')">📦 Loading</button>
                 <button class="main-menu-btn" onclick="showMenu('unloading')">📮 Unloading</button>
+                <button class="main-menu-btn" onclick="showMenu('users')">👥 Users</button>
                 <button class="main-menu-btn" onclick="showMenu('order')">🔄 Order</button>
             </div>
 
@@ -1033,6 +1034,64 @@
                     <div class="form-buttons">
                         <button type="submit" class="submit-btn" style="background: #dc3545;">Delete Unloading Location</button>
                         <button type="button" class="cancel-btn" onclick="closeForm('deleteUnloadingLocation')">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Users Menu Section -->
+            <div id="users-menu" class="menu-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Users Management</h3>
+                <div class="menu-buttons">
+                    <button class="menu-btn" onclick="openForm('getAllUsers')">Get All Users</button>
+                    <button class="menu-btn" onclick="openForm('blockUser')">Block User</button>
+                </div>
+                <button class="back-btn" onclick="closeMenu('users')">Back</button>
+            </div>
+
+            <!-- Get All Users Form -->
+            <div id="getAllUsers-form" class="form-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Get All Users</h3>
+                <div id="getAllUsers-alert" class="alert"></div>
+                <div id="getAllUsers-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                
+                <form id="getAllUsersForm" onsubmit="handleGetAllUsers(event)">
+                    <div class="form-group">
+                        <label for="adminId">Admin ID</label>
+                        <input type="number" id="adminId" name="adminId" placeholder="Enter admin ID" required>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn">Load All Users</button>
+                        <button type="button" class="cancel-btn" onclick="closeForm('getAllUsers')">Cancel</button>
+                    </div>
+                </form>
+
+                <!-- Users List Display -->
+                <div id="getAllUsers-details" style="margin-top: 20px; padding: 20px; background: white; border-radius: 5px; display: none;">
+                    <h4 style="color: #333; margin-bottom: 15px;">Users List</h4>
+                    <div id="usersList"></div>
+                </div>
+            </div>
+
+            <!-- Block User Form -->
+            <div id="blockUser-form" class="form-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Delete User</h3>
+                <div id="blockUser-alert" class="alert"></div>
+                <div id="blockUser-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                
+                <form id="blockUserForm" onsubmit="handleBlockUser(event)">
+                    <div class="form-group">
+                        <label for="deleteUserEmail">User Email</label>
+                        <input type="email" id="deleteUserEmail" name="email" placeholder="Enter user email" required>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn" style="background: #dc3545;">Delete User</button>
+                        <button type="button" class="cancel-btn" onclick="closeForm('blockUser')">Cancel</button>
                     </div>
                 </form>
             </div>
@@ -2143,22 +2202,32 @@
                     body: JSON.stringify(payload)
                 });
 
-                const data = await response.json();
-                console.log('Save Unloading Location Response:', response.status, data);
+                console.log('Save Unloading Location Response Status:', response.status);
+                
+                let result = null;
+                const responseText = await response.text();
+                console.log('Response Text:', responseText);
+                
+                if (responseText) {
+                    result = JSON.parse(responseText);
+                } else {
+                    result = {};
+                }
 
                 if (response.ok) {
                     showAlert('saveUnloadingLocation-alert', 'Unloading location saved successfully!', 'success');
                     
-                    // Display details
-                    document.getElementById('detailSaveUnloadingLocationId').textContent = data.id || unloadingLocationId;
-                    document.getElementById('detailSaveUnloadingLocationDate').textContent = data.date || 'N/A';
-                    document.getElementById('detailSaveUnloadingLocationTime').textContent = data.time || 'N/A';
-                    document.getElementById('detailSaveUnloadingLocationAddressId').textContent = data.adress?.id || 'N/A';
+                    // Extract Unloading data from response structure
+                    const unloadingData = result.data || result;
+                    document.getElementById('detailSaveUnloadingLocationId').textContent = unloadingData.id || unloadingLocationId;
+                    document.getElementById('detailSaveUnloadingLocationDate').textContent = unloadingData.date || 'N/A';
+                    document.getElementById('detailSaveUnloadingLocationTime').textContent = unloadingData.time || 'N/A';
+                    document.getElementById('detailSaveUnloadingLocationAddressId').textContent = unloadingData.adress?.id || 'N/A';
                     
                     document.getElementById('saveUnloadingLocation-details').style.display = 'block';
                     document.getElementById('saveUnloadingLocationForm').reset();
                 } else {
-                    showAlert('saveUnloadingLocation-alert', data.message || 'Failed to save unloading location', 'error');
+                    showAlert('saveUnloadingLocation-alert', result.message || 'Failed to save unloading location', 'error');
                 }
             } catch (error) {
                 console.error('Error saving unloading location:', error);
@@ -2183,22 +2252,32 @@
                     }
                 });
 
-                const data = await response.json();
-                console.log('Find Unloading Location Response:', response.status, data);
+                console.log('Find Unloading Location Response Status:', response.status);
+                
+                let result = null;
+                const responseText = await response.text();
+                console.log('Response Text:', responseText);
+                
+                if (responseText) {
+                    result = JSON.parse(responseText);
+                } else {
+                    result = {};
+                }
 
                 if (response.ok) {
                     showAlert('findUnloadingLocation-alert', 'Unloading location found!', 'success');
                     
-                    // Display Address details
-                    document.getElementById('detailUnloadingLocationId').textContent = data.id || 'N/A';
-                    document.getElementById('detailUnloadingLocationStreet').textContent = data.street || 'N/A';
-                    document.getElementById('detailUnloadingLocationCity').textContent = data.city || 'N/A';
-                    document.getElementById('detailUnloadingLocationPincode').textContent = data.pincode || 'N/A';
-                    document.getElementById('detailUnloadingLocationState').textContent = data.state || 'N/A';
+                    // Extract Address data from response structure
+                    const addressData = result.data || result;
+                    document.getElementById('detailUnloadingLocationId').textContent = addressData.id || 'N/A';
+                    document.getElementById('detailUnloadingLocationStreet').textContent = addressData.street || 'N/A';
+                    document.getElementById('detailUnloadingLocationCity').textContent = addressData.city || 'N/A';
+                    document.getElementById('detailUnloadingLocationPincode').textContent = addressData.pincode || 'N/A';
+                    document.getElementById('detailUnloadingLocationState').textContent = addressData.state || 'N/A';
                     
                     document.getElementById('findUnloadingLocation-details').style.display = 'block';
                 } else {
-                    showAlert('findUnloadingLocation-alert', data.message || 'Unloading location not found', 'error');
+                    showAlert('findUnloadingLocation-alert', result.message || 'Unloading location not found', 'error');
                     document.getElementById('findUnloadingLocation-details').style.display = 'none';
                 }
             } catch (error) {
@@ -2229,8 +2308,17 @@
                     }
                 });
 
-                const data = await response.json();
-                console.log('Delete Unloading Location Response:', response.status, data);
+                console.log('Delete Unloading Location Response Status:', response.status);
+                
+                let result = null;
+                const responseText = await response.text();
+                console.log('Response Text:', responseText);
+                
+                if (responseText) {
+                    result = JSON.parse(responseText);
+                } else {
+                    result = {};
+                }
 
                 if (response.ok) {
                     showAlert('deleteUnloadingLocation-alert', 'Unloading location deleted successfully!', 'success');
@@ -2239,13 +2327,149 @@
                         closeForm('deleteUnloadingLocation');
                     }, 1500);
                 } else {
-                    showAlert('deleteUnloadingLocation-alert', data.message || 'Failed to delete unloading location', 'error');
+                    showAlert('deleteUnloadingLocation-alert', result.message || 'Failed to delete unloading location', 'error');
                 }
             } catch (error) {
                 console.error('Error deleting unloading location:', error);
                 showAlert('deleteUnloadingLocation-alert', 'Error: ' + error.message, 'error');
             } finally {
                 setLoading('deleteUnloadingLocation-loading', false);
+            }
+        }
+
+        // Users Management Handlers
+        async function handleGetAllUsers(event) {
+            event.preventDefault();
+            
+            const adminId = document.getElementById('adminId').value;
+            console.log('Admin ID:', adminId);
+            console.log('API URL:', `${API_BASE_URL}/allusers/${adminId}`);
+            
+            setLoading('getAllUsers-loading', true);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/allusers/${adminId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                console.log('Response Status:', response.status);
+                
+                let result = null;
+                const responseText = await response.text();
+                console.log('Raw Response:', responseText);
+                
+                if (responseText) {
+                    try {
+                        result = JSON.parse(responseText);
+                    } catch (parseError) {
+                        console.error('JSON Parse Error:', parseError);
+                        showAlert('getAllUsers-alert', 'Invalid response format from server', 'error');
+                        setLoading('getAllUsers-loading', false);
+                        return;
+                    }
+                } else {
+                    result = [];
+                }
+
+                if (response.ok) {
+                    // Handle both direct array and wrapped response
+                    let usersList = [];
+                    if (Array.isArray(result)) {
+                        usersList = result;
+                    } else if (result && Array.isArray(result.data)) {
+                        usersList = result.data;
+                    } else if (result && typeof result === 'object') {
+                        usersList = [result];
+                    }
+                    
+                    console.log('Logged In Users:', usersList);
+                    
+                    if (!usersList || usersList.length === 0) {
+                        showAlert('getAllUsers-alert', 'No logged-in users found for this admin', 'info');
+                        document.getElementById('getAllUsers-details').style.display = 'none';
+                    } else {
+                        showAlert('getAllUsers-alert', `Found ${usersList.length} logged-in user(s)!`, 'success');
+                        
+                        // Display users in a table format
+                        let userHTML = '<table style="width: 100%; border-collapse: collapse; margin-top: 10px;">';
+                        userHTML += '<tr style="background: #f0f0f0;"><th style="padding: 10px; text-align: left; border: 1px solid #ddd;">ID</th><th style="padding: 10px; text-align: left; border: 1px solid #ddd;">Email</th><th style="padding: 10px; text-align: left; border: 1px solid #ddd;">Phone</th></tr>';
+                        
+                        usersList.forEach(user => {
+                            userHTML += '<tr>';
+                            userHTML += `<td style="padding: 10px; border: 1px solid #ddd;">${user.id || 'N/A'}</td>`;
+                            userHTML += `<td style="padding: 10px; border: 1px solid #ddd;">${user.userEmail || user.email || 'N/A'}</td>`;
+                            userHTML += `<td style="padding: 10px; border: 1px solid #ddd;">${user.userPhone || user.phone || 'N/A'}</td>`;
+                            userHTML += '</tr>';
+                        });
+                        
+                        userHTML += '</table>';
+                        document.getElementById('usersList').innerHTML = userHTML;
+                        document.getElementById('getAllUsers-details').style.display = 'block';
+                    }
+                } else {
+                    const errorMsg = result?.message || result?.error || `Server Error ${response.status}`;
+                    console.error('API Error:', errorMsg);
+                    showAlert('getAllUsers-alert', 'Failed to load users: ' + errorMsg, 'error');
+                    document.getElementById('getAllUsers-details').style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Fetch Error:', error);
+                showAlert('getAllUsers-alert', 'Error: ' + error.message, 'error');
+                document.getElementById('getAllUsers-details').style.display = 'none';
+            } finally {
+                setLoading('getAllUsers-loading', false);
+            }
+        }
+
+        async function handleBlockUser(event) {
+            event.preventDefault();
+            
+            const userEmail = document.getElementById('deleteUserEmail').value;
+            
+            // Confirmation dialog
+            if (!confirm(`Are you sure you want to delete user with email ${userEmail}? This action cannot be undone.`)) {
+                return;
+            }
+
+            setLoading('blockUser-loading', true);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/deletinguser/${userEmail}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                console.log('Delete User Response Status:', response.status);
+                
+                let result = null;
+                const responseText = await response.text();
+                console.log('Response Text:', responseText);
+                
+                if (responseText) {
+                    result = JSON.parse(responseText);
+                } else {
+                    result = {};
+                }
+
+                if (response.ok) {
+                    showAlert('blockUser-alert', 'User deleted successfully!', 'success');
+                    document.getElementById('blockUserForm').reset();
+                    setTimeout(() => {
+                        closeForm('blockUser');
+                    }, 1500);
+                } else {
+                    showAlert('blockUser-alert', result.message || 'Failed to delete user', 'error');
+                }
+            } catch (error) {
+                console.error('Error deleting user:', error);
+                showAlert('blockUser-alert', 'Error: ' + error.message, 'error');
+            } finally {
+                setLoading('blockUser-loading', false);
             }
         }
     </script>
