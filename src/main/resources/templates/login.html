@@ -625,7 +625,7 @@
 
         async function handleAdminLogin(event) {
             event.preventDefault();
-            const phone = document.getElementById('adminPhone').value;
+            const phone = document.getElementById('adminPhone').value.toString();
             const password = document.getElementById('adminPassword').value;
 
             setLoading(true);
@@ -658,7 +658,7 @@
 
         async function handleAdminSignup(event) {
             event.preventDefault();
-            const phone = document.getElementById('newAdminPhone').value;
+            const phone = document.getElementById('newAdminPhone').value.toString();
             const password = document.getElementById('newAdminPassword').value;
 
             setLoading(true);
