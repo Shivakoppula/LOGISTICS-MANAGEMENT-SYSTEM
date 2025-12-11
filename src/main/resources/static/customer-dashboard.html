@@ -123,6 +123,177 @@
                 font-size: 24px;
             }
         }
+
+        .menu-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .menu-btn {
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .form-section {
+            display: none;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.3);
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .submit-btn {
+            padding: 10px 25px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .cancel-btn {
+            padding: 10px 25px;
+            background: #ccc;
+            color: #333;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .cancel-btn:hover {
+            background: #bbb;
+        }
+
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .details-display {
+            background: #f0f8ff;
+            padding: 20px;
+            border-left: 4px solid #667eea;
+            border-radius: 5px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .details-display.show {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -137,11 +308,69 @@
     <div class="container">
         <div class="dashboard">
             <h2>Welcome to Your Dashboard</h2>
-            <p>Your customer dashboard is ready. Additional features will be added here based on your requirements.</p>
+            <p>Manage your shipments and track orders</p>
             
-            <div class="placeholder-content">
-                <h3>Dashboard Content Coming Soon</h3>
-                <p>This page will be populated with your customer features and data.</p>
+            <div class="menu-buttons">
+                <button class="menu-btn" onclick="showForm('placeOrder')">📦 Place Order</button>
+            </div>
+
+            <!-- Place Order Form -->
+            <div id="placeOrder-form" class="form-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Place New Order</h3>
+                <div id="placeOrder-alert" class="alert"></div>
+                <div id="placeOrder-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                
+                <form id="placeOrderForm" onsubmit="handlePlaceOrder(event)">
+                    <div class="form-group">
+                        <label for="cargoName">Cargo Name</label>
+                        <input type="text" id="cargoName" name="name" placeholder="Enter cargo name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cargoDescription">Description</label>
+                        <input type="text" id="cargoDescription" name="description" placeholder="Enter cargo description" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cargoWeight">Weight (kg)</label>
+                        <input type="number" id="cargoWeight" name="weight" placeholder="Enter weight" step="0.01" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cargoCount">Count</label>
+                        <input type="number" id="cargoCount" name="count" placeholder="Enter count" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="loadingLocationId">Loading Location ID</label>
+                        <input type="number" id="loadingLocationId" name="loadingId" placeholder="Enter loading location ID" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="unloadingLocationId">Unloading Location ID</label>
+                        <input type="number" id="unloadingLocationId" name="unloadingId" placeholder="Enter unloading location ID" required>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn">Place Order</button>
+                        <button type="button" class="cancel-btn" onclick="hideForm('placeOrder')">Cancel</button>
+                    </div>
+                </form>
+
+                <!-- Order Confirmation Display -->
+                <div id="placeOrder-details" class="details-display">
+                    <h4 style="color: #333; margin-bottom: 15px;">✅ Order Placed Successfully</h4>
+                    <div style="background: white; padding: 15px; border-radius: 5px; line-height: 2;">
+                        <p><strong>Cargo Name:</strong> <span id="confirmCargoName" style="color: #667eea; font-weight: 600;"></span></p>
+                        <p><strong>Description:</strong> <span id="confirmDescription" style="color: #667eea; font-weight: 600;"></span></p>
+                        <p><strong>Weight:</strong> <span id="confirmWeight" style="color: #667eea; font-weight: 600;"></span> kg</p>
+                        <p><strong>Count:</strong> <span id="confirmCount" style="color: #667eea; font-weight: 600;"></span></p>
+                        <p><strong>Loading Location ID:</strong> <span id="confirmLoadingId" style="color: #667eea; font-weight: 600;"></span></p>
+                        <p><strong>Unloading Location ID:</strong> <span id="confirmUnloadingId" style="color: #667eea; font-weight: 600;"></span></p>
+                    </div>
+                </div>
             </div>
 
             <p style="margin-top: 30px; color: #999; font-size: 12px;">
@@ -151,6 +380,8 @@
     </div>
 
     <script>
+        const API_BASE_URL = 'http://localhost:8080';
+
         // Get user email from localStorage
         window.addEventListener('load', function() {
             const userEmail = localStorage.getItem('userEmail');
@@ -168,6 +399,113 @@
             localStorage.removeItem('userEmail');
             // Redirect to login
             window.location.href = '/login.html';
+        }
+
+        // Show form
+        function showForm(formType) {
+            const form = document.getElementById(formType + '-form');
+            if (form) {
+                form.classList.add('active');
+            }
+        }
+
+        // Hide form
+        function hideForm(formType) {
+            const form = document.getElementById(formType + '-form');
+            if (form) {
+                form.classList.remove('active');
+                // Reset form
+                const formElement = document.getElementById(formType + 'Form');
+                if (formElement) {
+                    formElement.reset();
+                }
+            }
+            // Hide details display
+            const details = document.getElementById(formType + '-details');
+            if (details) {
+                details.classList.remove('show');
+            }
+        }
+
+        // Show Alert
+        function showAlert(elementId, message, type) {
+            const alertEl = document.getElementById(elementId);
+            alertEl.textContent = message;
+            alertEl.className = `alert show alert-${type}`;
+            setTimeout(() => alertEl.classList.remove('show'), 4000);
+        }
+
+        // Show/Hide Loading
+        function setLoading(elementId, show) {
+            const loadingEl = document.getElementById(elementId);
+            if (show) {
+                loadingEl.classList.add('show');
+            } else {
+                loadingEl.classList.remove('show');
+            }
+        }
+
+        // Place Order Handler
+        async function handlePlaceOrder(event) {
+            event.preventDefault();
+            
+            // Get current date
+            const today = new Date();
+            const orderDate = today.toISOString().split('T')[0];
+            
+            const orderData = {
+                orderdate: orderDate,
+                cargoname: document.getElementById('cargoName').value,
+                cargodiscription: document.getElementById('cargoDescription').value,
+                cargowieght: parseInt(document.getElementById('cargoWeight').value),
+                carcount: parseInt(document.getElementById('cargoCount').value),
+                loadid: parseInt(document.getElementById('loadingLocationId').value),
+                unloadid: parseInt(document.getElementById('unloadingLocationId').value)
+            };
+
+            setLoading('placeOrder-loading', true);
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/Placingorder`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(orderData)
+                });
+
+                console.log('Place Order Response Status:', response.status);
+
+                if (response.ok) {
+                    // Display confirmation with entered details
+                    document.getElementById('confirmCargoName').textContent = orderData.cargoname;
+                    document.getElementById('confirmDescription').textContent = orderData.cargodiscription;
+                    document.getElementById('confirmWeight').textContent = orderData.cargowieght;
+                    document.getElementById('confirmCount').textContent = orderData.carcount;
+                    document.getElementById('confirmLoadingId').textContent = orderData.loadid;
+                    document.getElementById('confirmUnloadingId').textContent = orderData.unloadid;
+                    
+                    document.getElementById('placeOrder-details').classList.add('show');
+                    showAlert('placeOrder-alert', 'Order placed successfully!', 'success');
+                    
+                    // Reset form after 3 seconds
+                    setTimeout(() => {
+                        document.getElementById('placeOrderForm').reset();
+                        hideForm('placeOrder');
+                    }, 3000);
+                } else {
+                    const responseText = await response.text();
+                    console.error('Error Response:', responseText);
+                    showAlert('placeOrder-alert', 'Failed to place order. Please check your input.', 'error');
+                    document.getElementById('placeOrder-details').classList.remove('show');
+                }
+            } catch (error) {
+                console.error('Error placing order:', error);
+                showAlert('placeOrder-alert', 'Error: ' + error.message, 'error');
+                document.getElementById('placeOrder-details').classList.remove('show');
+            } finally {
+                setLoading('placeOrder-loading', false);
+            }
         }
     </script>
 </body>

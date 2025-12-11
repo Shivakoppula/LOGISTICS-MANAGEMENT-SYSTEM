@@ -791,45 +791,6 @@ async function handleUpdateCarrierByTruckId(event) {
 }
 
 // Update Loading Unloading DateTime Handler
-async function handleUpdateLoadingUnloadingDateTime(event) {
-    event.preventDefault();
-    
-    const orderId = document.getElementById('orderId').value;
-
-    setLoading('updateLoadingUnloadingDateTime-loading', true);
-    
-    try {
-        const response = await fetch(`${API_BASE_URL}/updateloadingunloadingdatebyorder/${orderId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        const data = await response.json();
-        console.log('Update Loading/Unloading DateTime Response:', response.status, data);
-
-        if (response.ok) {
-            const dateTimeData = data.data || data;
-            document.getElementById('dateTimeOrderId').textContent = dateTimeData.orderId || dateTimeData.id || 'N/A';
-            document.getElementById('dateTimeLoadingDateTime').textContent = dateTimeData.loadingDateTime || 'N/A';
-            document.getElementById('dateTimeUnloadingDateTime').textContent = dateTimeData.unloadingDateTime || 'N/A';
-            
-            document.getElementById('updateLoadingUnloadingDateTime-details').style.display = 'block';
-            showAlert('updateLoadingUnloadingDateTime-alert', 'DateTime updated successfully!', 'success');
-        } else {
-            showAlert('updateLoadingUnloadingDateTime-alert', data.message || 'Failed to update DateTime', 'error');
-            document.getElementById('updateLoadingUnloadingDateTime-details').style.display = 'none';
-        }
-    } catch (error) {
-        console.error('Error updating DateTime:', error);
-        showAlert('updateLoadingUnloadingDateTime-alert', 'Error: ' + error.message, 'error');
-        document.getElementById('updateLoadingUnloadingDateTime-details').style.display = 'none';
-    } finally {
-        setLoading('updateLoadingUnloadingDateTime-loading', false);
-    }
-}
-
 // Save Loading Location Handler
 async function handleSaveLoadingLocation(event) {
     event.preventDefault();
