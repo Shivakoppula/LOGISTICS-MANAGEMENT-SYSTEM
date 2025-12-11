@@ -377,6 +377,12 @@
                             <input type="password" id="newCustomerPassword" name="password" placeholder="Create a password" required>
                             <span class="toggle-icon" onclick="togglePassword('newCustomerPassword')">👁️</span>
                         </div>
+                        <div class="form-group password-toggle">
+                            <label for="confirmPassword">Confirm Password</label>
+                            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirm your password" required>
+                            <span class="toggle-icon" onclick="togglePassword('confirmPassword')">👁️</span>
+                        </div>
+                        <div id="passwordError" class="alert alert-error" style="margin-bottom: 15px;"></div>
                         <div class="button-group">
                             <button type="submit" class="btn btn-primary">Sign Up</button>
                             <button type="button" class="btn btn-secondary" onclick="toggleCustomerForms('login')">Back</button>
@@ -444,6 +450,12 @@
                             <input type="password" id="newAdminPassword" name="password" placeholder="Create a password" required>
                             <span class="toggle-icon" onclick="togglePassword('newAdminPassword')">👁️</span>
                         </div>
+                        <div class="form-group password-toggle">
+                            <label for="confirmAdminPassword">Confirm Password</label>
+                            <input type="password" id="confirmAdminPassword" name="confirmPassword" placeholder="Confirm your password" required>
+                            <span class="toggle-icon" onclick="togglePassword('confirmAdminPassword')">👁️</span>
+                        </div>
+                        <div id="adminPasswordError" class="alert alert-error" style="margin-bottom: 15px;"></div>
                         <div class="button-group">
                             <button type="submit" class="btn btn-primary">Sign Up</button>
                             <button type="button" class="btn btn-secondary" onclick="toggleAdminForms('login')">Back</button>
@@ -601,6 +613,19 @@
             event.preventDefault();
             const email = document.getElementById('newCustomerEmail').value;
             const password = document.getElementById('newCustomerPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const errorDiv = document.getElementById('passwordError');
+
+            // Clear previous error
+            errorDiv.classList.remove('show');
+            errorDiv.textContent = '';
+
+            // Validate passwords match
+            if (password !== confirmPassword) {
+                errorDiv.textContent = '❌ Password and Confirm Password should be match';
+                errorDiv.classList.add('show');
+                return;
+            }
 
             setLoading(true);
             try {
@@ -736,6 +761,19 @@
             event.preventDefault();
             const phone = document.getElementById('newAdminPhone').value.toString();
             const password = document.getElementById('newAdminPassword').value;
+            const confirmPassword = document.getElementById('confirmAdminPassword').value;
+            const errorDiv = document.getElementById('adminPasswordError');
+
+            // Clear previous error
+            errorDiv.classList.remove('show');
+            errorDiv.textContent = '';
+
+            // Validate passwords match
+            if (password !== confirmPassword) {
+                errorDiv.textContent = '❌ Password and Confirm Password should be match';
+                errorDiv.classList.add('show');
+                return;
+            }
 
             setLoading(true);
             try {
