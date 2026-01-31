@@ -30,7 +30,7 @@ public class Unloading_Services {
 		ResponceStucture<Unloading> rs=new ResponceStucture<Unloading>();
 		
 		if(present) {
-			unloadrepo.save(ad);
+			unloadrepo.save(unload);
 			
 			rs.setCode(HttpStatus.OK.value());
 			rs.setMessage("Delivery Adress details of id Found");
@@ -46,24 +46,22 @@ public class Unloading_Services {
 		
 	}
 
-	public ResponseEntity<ResponceStucture<Address>> findDelivery(int id) {
+	public ResponseEntity<ResponceStucture<Unloading>> findDelivery(int id) {
 		
-		 adressrepo.findById(id).get();
+		Address ad=adressrepo.findById(id).get();
 		
 		ResponceStucture<Address> rs=new ResponceStucture<Address>();
-		if(adressrepo.existsById(id)) {
+		if(ad!=null) {
 			rs.setCode(HttpStatus.OK.value());
-			rs.setData(ad);
-
-			
+			rs.setMessage("Adress details for unloading");
+			rs.setData(ad);			
 		}
 		else
 		{
 
 			throw new AdressNotFound();
 		}
-		return new ResponseEntity<ResponceStucture<Address>>(HttpStatus.OK );
-		
+		return new ResponseEntity<ResponceStucture<Unloading>>(HttpStatus.OK );	
 	}
 
 	public ResponseEntity<ResponceStucture<Unloading>> cancleDetails(int id) {

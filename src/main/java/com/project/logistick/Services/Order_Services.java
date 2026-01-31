@@ -21,6 +21,7 @@ import com.project.logistick.Entitiesclasses.Unloading;
 import com.project.logistick.Exceptions.OrderCanceled;
 import com.project.logistick.Exceptions.OrderNotFound;
 import com.project.logistick.Exceptions.OrderNotPending;
+import com.project.logistick.Exceptions.AdressNotFound;
 import com.project.logistick.Exceptions.TruckCapacity;
 import com.project.logistick.Repositories.Adress_Repo;
 import com.project.logistick.Repositories.Cargo_Repo;
@@ -47,6 +48,7 @@ public class Order_Services {
 
 	public ResponseEntity<ResponceStucture<Order>> orderPlacing(OrderDto orderdto) {
 		Order od=new Order();
+		
 		
 		Date date=new Date();
 		SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
@@ -78,18 +80,70 @@ public class Order_Services {
 		//unloading class
 		Unloading unload=new Unloading();
 		Address unloadadres=adrepo.findById(orderdto.getUnloadid()).get();
-		unload.setId(orderdto.getUnloadid());
-		unload.setAdress(unloadadres);
-		unload=unrepo.save(unload);
-		
-		od.setUnloading(unload);
-		orderepo.save(od);
+		if(unloadadres!=null) {
+			unload.setId(orderdto.getUnloadid());
+			unload.setAdress(unloadadres);
+			unload=unrepo.save(unload);
+			
+			od.setUnloading(unload);
+			orderepo.save(od);
+		}else {
+			throw new AdressNotFound();
+		}
 		
 		ResponceStucture<Order> rs= new ResponceStucture<Order>();
 		
 		rs.setCode(HttpStatus.CREATED.value());
 		rs.setMessage("Order Placed successfully");
 		rs.setData(od);
+		
+		Order odr=orderepo.findById(od.getId()).get();
+		
+		if(od.getStatus().equals("cancle")) {
+			throw new OrderCanceled();
+		}
+		else {
+
+			//loading  date setting
+//			Date date=new Date();
+//			SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+//			String currentDate=format.format(date);
+			//time setting
+			 LocalTime currentTime = LocalTime.now();
+			 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+		     String time = currentTime.format(formatter);
+
+			 odr.getLoading().setDate(currentDate);
+			 odr.getLoading().setTime(time);
+			 
+			 //unloading date setting
+			    LocalDate today = LocalDate.now();
+			    LocalDate futureDate = today.plusDays(5);
+			    //time setting
+		        DateTimeFormatter futureformatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		        String futuredate = futureDate.format(futureformatter);
+		        LocalDateTime now = LocalDateTime.now();
+		        // Add 5 days
+		        LocalDateTime futureDateTime = now.plusDays(5);
+		        // Format as String
+		        DateTimeFormatter futureTime = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+		        String dateTime = futureDateTime.format(futureTime);
+		        //setting unloading
+			    odr.getUnloading().setDate(futuredate);
+			    odr.getUnloading().setTime(dateTime);
+			    //saving
+			    orderepo.save(odr);
+		}
+		 
+//		    ResponceStucture<Order> rs = new ResponceStucture<Order>();
+
+			rs.setCode(HttpStatus.CREATED.value());
+			rs.setMessage("Loading,unloading date and time updated successfully");
+			rs.setData(od);
+
+//			return new ResponseEntity<ResponceStucture<Order>>(rs, HttpStatus.OK);
+
+		
 		
 		return new ResponseEntity<ResponceStucture<Order>>(rs,HttpStatus.OK);
 	
@@ -193,58 +247,58 @@ public class Order_Services {
 		
 	}
 
-	public ResponseEntity<ResponceStucture<Order>> updateLoadingUnloadingDate(int orderid) {
-		Order od=orderepo.findById(orderid).get();
-		
-		
-		if(od.getStatus().equals("cancle")) {
-			throw new OrderCanceled();
-		}
-		else {
-
-			//loading  date setting
-			Date date=new Date();
-			SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
-			String currentDate=format.format(date);
-			//time setting
-			 LocalTime currentTime = LocalTime.now();
-			 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-		     String time = currentTime.format(formatter);
-
-			 od.getLoading().setDate(currentDate);
-			 od.getLoading().setTime(time);
-			 
-			 //unloading date setting
-			    LocalDate today = LocalDate.now();
-			    LocalDate futureDate = today.plusDays(5);
-			    //time setting
-		        DateTimeFormatter futureformatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-		        String futuredate = futureDate.format(futureformatter);
-		        LocalDateTime now = LocalDateTime.now();
-		        // Add 5 days
-		        LocalDateTime futureDateTime = now.plusDays(5);
-		        // Format as String
-		        DateTimeFormatter futureTime = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-		        String dateTime = futureDateTime.format(futureTime);
-		        //setting unloading
-			    od.getUnloading().setDate(futuredate);
-			    od.getUnloading().setTime(dateTime);
-			    //saving
-			    orderepo.save(od);
-		}
-		 
-		    ResponceStucture<Order> rs = new ResponceStucture<Order>();
-
-			rs.setCode(HttpStatus.CREATED.value());
-			rs.setMessage("Loading,unloading date and time updated successfully");
-			rs.setData(od);
-
-			return new ResponseEntity<ResponceStucture<Order>>(rs, HttpStatus.OK);
-
-		
-		
-	}
-	
+//	public ResponseEntity<ResponceStucture<Order>> updateLoadingUnloadingDate(int orderid) {
+//		Order od=orderepo.findById(orderid).get();
+//		
+//		
+//		if(od.getStatus().equals("cancle")) {
+//			throw new OrderCanceled();
+//		}
+//		else {
+//
+//			//loading  date setting
+//			Date date=new Date();
+//			SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+//			String currentDate=format.format(date);
+//			//time setting
+//			 LocalTime currentTime = LocalTime.now();
+//			 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+//		     String time = currentTime.format(formatter);
+//
+//			 od.getLoading().setDate(currentDate);
+//			 od.getLoading().setTime(time);
+//			 
+//			 //unloading date setting
+//			    LocalDate today = LocalDate.now();
+//			    LocalDate futureDate = today.plusDays(5);
+//			    //time setting
+//		        DateTimeFormatter futureformatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+//		        String futuredate = futureDate.format(futureformatter);
+//		        LocalDateTime now = LocalDateTime.now();
+//		        // Add 5 days
+//		        LocalDateTime futureDateTime = now.plusDays(5);
+//		        // Format as String
+//		        DateTimeFormatter futureTime = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+//		        String dateTime = futureDateTime.format(futureTime);
+//		        //setting unloading
+//			    od.getUnloading().setDate(futuredate);
+//			    od.getUnloading().setTime(dateTime);
+//			    //saving
+//			    orderepo.save(od);
+//		}
+//		 
+//		    ResponceStucture<Order> rs = new ResponceStucture<Order>();
+//
+//			rs.setCode(HttpStatus.CREATED.value());
+//			rs.setMessage("Loading,unloading date and time updated successfully");
+//			rs.setData(od);
+//
+//			return new ResponseEntity<ResponceStucture<Order>>(rs, HttpStatus.OK);
+//
+//		
+//		
+//	}
+//	
 }
 
 //	public ResponseEntity<ResponceStucture<Order>> updateunloadingdate(int id) {

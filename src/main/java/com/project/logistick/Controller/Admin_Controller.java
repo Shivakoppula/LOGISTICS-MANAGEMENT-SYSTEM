@@ -140,18 +140,18 @@ public class Admin_Controller {
 	@Autowired
 	private Order_Services orderservice;
 
-	//update carrier by truck id
+	//update carrier by truck id,order id
 	@PutMapping("/updateorderassigncarrie/{id}/bytruckid/{truckid}")
 	public ResponseEntity<ResponceStucture<Order>> updateOrderByTruckId(@PathVariable int id, @PathVariable int truckid)
 	{
 		return orderservice.updateOrder(id,truckid);
 	}
 	//updating loading unloading date and time
-	@PutMapping("/updateloadingunloadingdatebyorder/{orderid}")
-	public ResponseEntity<ResponceStucture<Order>> updateDateTime(@PathVariable int orderid)
-	{
-		return orderservice.updateLoadingUnloadingDate(orderid);
-	}
+//	@PutMapping("/updateloadingunloadingdatebyorder/{orderid}")
+//	public ResponseEntity<ResponceStucture<Order>> updateDateTime(@PathVariable int orderid)
+//	{
+//		return orderservice.updateLoadingUnloadingDate(orderid);
+//	}
 	
 	//Loading CRUD Operations
 	
@@ -187,7 +187,7 @@ public class Admin_Controller {
 	}
 	
 	@GetMapping("/finddeliverAdress/{id}")
-	public ResponseEntity<ResponceStucture<Address>> findDeliverlyDetails(@PathVariable int id)
+	public ResponseEntity<ResponceStucture<Unloading>> findDeliverlyDetails(@PathVariable int id)
 	{
 		return unloaddetails.findDelivery(id);
 	}
@@ -201,7 +201,7 @@ public class Admin_Controller {
 	//admin login details
 	
 	@Autowired
-	AdminLogin_service adminService;
+	private AdminLogin_service adminService;
 	@PostMapping("/login")
 	public ResponseEntity<ResponceStucture<AdminLogin>> adminLogin(@RequestBody @Valid AdminLogin admin) {
 		return adminService.save(admin);

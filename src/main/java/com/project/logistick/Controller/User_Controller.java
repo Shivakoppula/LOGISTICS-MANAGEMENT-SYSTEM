@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.project.logistick.DTO.OrderDto;
 import com.project.logistick.DTO.ResponceStucture;
 import com.project.logistick.Entitiesclasses.Cargo;
+import com.project.logistick.Entitiesclasses.Items;
 import com.project.logistick.Entitiesclasses.Order;
 import com.project.logistick.Services.Cargo_Services;
+import com.project.logistick.Services.Items_Service;
 import com.project.logistick.Services.Order_Services;
 import com.project.logistick.Services.UserService;
 import com.project.logistick.login.UserLogin;
@@ -23,6 +25,8 @@ import jakarta.validation.Valid;
 
 @RestController
 public class User_Controller {
+	
+
 	
 //	//cargo crud operations
 	@Autowired
@@ -34,10 +38,15 @@ public class User_Controller {
 		return cargosr.saveCargo(cargo);
 	}
 	
-	@GetMapping("/cargofind/{id}")
-	public ResponseEntity<ResponceStucture<Cargo>> cargoTrack(@PathVariable int id)
+	@GetMapping("/cargofind/{name}")
+	public ResponseEntity<ResponceStucture<Cargo>> cargoTrack(@PathVariable String name)
 	{
-		return cargosr.trackCargo(id);
+		return cargosr.trackCargo(name);
+	}
+	@GetMapping("/cargofetch/{id}")
+	public ResponseEntity<ResponceStucture<Cargo>> Track(@PathVariable int id)
+	{
+		return cargosr.trackCargos(id);
 	}
 	
 	@DeleteMapping("/deletecargo/{id}")
@@ -53,7 +62,7 @@ public class User_Controller {
 	private Order_Services orderservice;
 	//saving
 	@PostMapping("/Placingorder")
-	public void orderDetails(@RequestBody OrderDto order)
+	public void orderDetails(@RequestBody @Valid OrderDto order)
 	{
 		orderservice.orderPlacing(order);
 	}
@@ -86,6 +95,14 @@ public class User_Controller {
 	@PutMapping("/update/{oldemail}/{newemail}")
 	public ResponseEntity<ResponceStucture<UserLogin>> updateDetails(@PathVariable String oldemail,@PathVariable String newemail) {
 	   return userservice.updatedetails(oldemail,newemail);
+	}
+	
+	//items placing
+	@Autowired
+	private Items_Service items;
+	@PutMapping("/placing/{name}/{quantity}")
+	public void placingorder( @PathVariable String name,@PathVariable int quantity) {
+		items.placeOrder(name,quantity);	
 	}
 	
 

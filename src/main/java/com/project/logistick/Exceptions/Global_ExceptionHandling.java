@@ -250,6 +250,15 @@ public class Global_ExceptionHandling {
 					rs.setData(null);
 					return new ResponseEntity<ResponceStucture<UserLogin>>(rs,HttpStatus.NOT_FOUND);
 			}
+				//exception for User  Not found
+				@ExceptionHandler(exception=UserAlreadyExist.class)
+				public ResponseEntity<ResponceStucture<UserLogin>> handleUserFound() {
+					ResponceStucture<UserLogin> rs=new ResponceStucture<UserLogin>();
+					rs.setCode(HttpStatus.NOT_FOUND.value());
+					rs.setMessage("User details already exist");
+					rs.setData(null);
+					return new ResponseEntity<ResponceStucture<UserLogin>>(rs,HttpStatus.NOT_FOUND);
+			}
 				
 	//Exception for invalid data entered
 	@ExceptionHandler(MethodArgumentNotValidException.class)

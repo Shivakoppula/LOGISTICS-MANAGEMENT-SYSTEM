@@ -35,10 +35,13 @@ public class OrderDto {
 	@Positive
 	@NotNull
 	private int unloadid;
-	public OrderDto(String orderdate, int cargoid, String cargoname, String cargodiscription,
-			int cargowieght, int carcount, int loadid, int unloadid) {
+	
+	public OrderDto(String orderdate, @Positive @Min(1) @Max(100) @NotNull int cargoid,
+			@Size(min = 2, max = 15) @NotNull String cargoname,
+			@Size(min = 5, max = 1000000) @NotNull String cargodiscription,
+			@Positive @NotNull @Min(1) @Max(100) int cargowieght, @Positive @NotNull @Min(1) @Max(100) int carcount,
+			@Positive @NotNull int loadid, @Positive @NotNull int unloadid) {
 		super();
-
 		this.orderdate = orderdate;
 		this.cargoid = cargoid;
 		this.cargoname = cargoname;
@@ -48,9 +51,11 @@ public class OrderDto {
 		this.loadid = loadid;
 		this.unloadid = unloadid;
 	}
+	
 	public OrderDto() {
 		super();
 	}
+
 	public String getOrderdate() {
 		return orderdate;
 	}

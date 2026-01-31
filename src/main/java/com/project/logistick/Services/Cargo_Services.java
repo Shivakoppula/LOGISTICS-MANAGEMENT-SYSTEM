@@ -17,10 +17,10 @@ import com.project.logistick.Repositories.Cargo_Repo;
 public class Cargo_Services {
 	@Autowired
 	private Cargo_Repo carrepo;
-
+	ResponceStucture<Cargo> rs=new ResponceStucture<Cargo>();
 	public ResponseEntity<ResponceStucture<Cargo>> saveCargo(Cargo cargo) {
 		  Boolean present=carrepo.existsById(cargo.getId());
-		  ResponceStucture<Cargo> rs=new ResponceStucture<Cargo>();
+//		  ResponceStucture<Cargo> rs=new ResponceStucture<Cargo>();
 
 			if(present)
 				{
@@ -36,14 +36,12 @@ public class Cargo_Services {
 
 	}
 
-	public ResponseEntity<ResponceStucture<Cargo>> trackCargo(int id) {
-		
-		Optional<Cargo>caropt=carrepo.findById(id);
-		ResponceStucture<Cargo> rs=new ResponceStucture<Cargo>();
-		if(caropt.isPresent()) {
+	public ResponseEntity<ResponceStucture<Cargo>> trackCargo(String name) {
+		Cargo cargo=carrepo.findByName(name);	
+		if(cargo!=null) {
 			rs.setCode(HttpStatus.OK.value());
-			rs.setMessage("Cargo details of id "+id+" Found");
-			rs.setData(caropt.get());
+			rs.setMessage("Cargo details of name "+name+" Found");
+			rs.setData(cargo);
 			
 		}
 		else
@@ -60,7 +58,7 @@ public class Cargo_Services {
 	public ResponseEntity<ResponceStucture<Cargo>> removeCargo(int id) {
 		 Optional<Cargo>caropt=carrepo.findById(id);
 			
-			ResponceStucture<Cargo> rs=new ResponceStucture<Cargo>();
+			
 			if(caropt.isPresent()) {
 				 carrepo.deleteById(id);
 					rs.setCode(HttpStatus.OK.value());
@@ -76,6 +74,20 @@ public class Cargo_Services {
 
 			return new ResponseEntity<ResponceStucture<Cargo>>(rs,HttpStatus.OK );
 		
+	}
+
+	public ResponseEntity<ResponceStucture<Cargo>> trackCargos(int id) {
+		Optional<Cargo>caropt=carrepo.findById(id);
+		if(caropt.isPresent()) {
+			rs.setCode(HttpStatus.OK.value());
+			rs.setMessage("Cargo details of id "+id+" Found");
+			rs.setData(caropt.get());
+			
+		}
+		else {
+			throw new CargoNotFound();
+		}
+		return new ResponseEntity<ResponceStucture<Cargo>>(rs,HttpStatus.OK );
 	}
 
 }

@@ -15,7 +15,7 @@ import jakarta.validation.constraints.NotNull;
 @Entity
 public class AdminLogin {
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE)
 	private int id;
 	@NotNull
 	private long phonenumber;

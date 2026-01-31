@@ -87,14 +87,13 @@ public class AdminLogin_service {
            }
 		
 	}
-	public List<UserLogin> getusers(long phone) {
-		AdminLogin ad=adminRepo.findByPhonenumber(phone);
-		if(ad==null) {
-			rs.setCode(HttpStatus.NOT_FOUND.value());
-			throw new  AdminDetailsNotFound();
-		}
-		return ad.getUser();
-	}
+	@Autowired
+	UserRepo userepo;
+	public List<UserLogin> getusers(Long phoneNumber) {
+        return userepo.findByAdmin_Phonenumber(phoneNumber);
+    }
+
+	
 	
 	@Autowired
 	UserRepo userrepo;

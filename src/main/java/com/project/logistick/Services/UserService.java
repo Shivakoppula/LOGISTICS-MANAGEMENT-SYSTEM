@@ -5,22 +5,32 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.project.logistick.DTO.ResponceStucture;
-import com.project.logistick.Exceptions.AdminDetailsNotFound;
+import com.project.logistick.Entitiesclasses.Cargo;
+import com.project.logistick.Entitiesclasses.Items;
+import com.project.logistick.Exceptions.UserAlreadyExist;
+import com.project.logistick.Exceptions.UserDetailsNotFound;
+import com.project.logistick.Repositories.AdminLogin_Repo;
+import com.project.logistick.Repositories.Cargo_Repo;
 import com.project.logistick.Repositories.UserRepo;
+import com.project.logistick.login.AdminLogin;
 import com.project.logistick.login.UserLogin;
 
 @Service
 public class UserService {
 	@Autowired
 	UserRepo userrepo;
+	@Autowired
+	AdminLogin_Repo adminrepo;
 	ResponceStucture<UserLogin> rs=new ResponceStucture<UserLogin>();
 	public ResponseEntity<ResponceStucture<UserLogin>> saveUser(UserLogin user) {
-//		Optional<UserLogin> users=userrepo.findById(user.getId());
 		UserLogin users=userrepo.findByEmail(user.getEmail());
-		if(users!=null) {
-			throw new AdminDetailsNotFound();
+		
+		AdminLogin ad=adminrepo.findByPhonenumber(7569723182l);
+		if(users!=null && users.getEmail()!=(user.getEmail())) {
+			throw new UserAlreadyExist();
 		}
 		else {
+			user.setAdmin(ad);
 			  userrepo.save(user);
 				
 				rs.setCode(HttpStatus.OK.value());
@@ -39,7 +49,7 @@ public class UserService {
 			
 		}
 		else {
-			throw new AdminDetailsNotFound();
+			throw new UserDetailsNotFound();
 		}
 		return new ResponseEntity<ResponceStucture<UserLogin>>(rs,HttpStatus.OK);
 		
@@ -55,7 +65,7 @@ public class UserService {
 			
 		}
 		else {
-			throw new AdminDetailsNotFound();
+			throw new UserDetailsNotFound();
 		}
 		return new ResponseEntity<ResponceStucture<UserLogin>>(rs,HttpStatus.OK);
 		

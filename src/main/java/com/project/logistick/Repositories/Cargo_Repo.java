@@ -7,4 +7,6 @@ import com.project.logistick.Entitiesclasses.Cargo;
 @Repository
 public interface Cargo_Repo extends JpaRepository<Cargo, Integer> {
 
+	Cargo findByName(String name);
+
 }

@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 import com.project.logistick.Entitiesclasses.Driver_Class;
 @Repository
 public interface Driver_Repo extends JpaRepository<Driver_Class, Integer> {
-
+  Driver_Class findByName(String name);
 }
