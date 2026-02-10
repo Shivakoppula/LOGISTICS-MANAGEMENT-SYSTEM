@@ -30,8 +30,8 @@ import com.project.logistick.Repositories.Loading_Repo;
 import com.project.logistick.Repositories.Order_Repo;
 import com.project.logistick.Repositories.Truck_Repo;
 import com.project.logistick.Repositories.Unloading_repo;
+import com.project.logistick.DAO.ResponceStucture;
 import com.project.logistick.DTO.OrderDto;
-import com.project.logistick.DTO.ResponceStucture;
 
 @Service
 public class Order_Services {

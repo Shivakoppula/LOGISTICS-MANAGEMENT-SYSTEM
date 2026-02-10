@@ -1,4 +1,4 @@
-package com.project.logistick.DTO;
+package com.project.logistick.DAO;
 
 public class ResponceStucture<T> {
 	private int code;

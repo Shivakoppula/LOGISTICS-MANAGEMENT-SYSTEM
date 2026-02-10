@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.project.logistick.DAO.ResponceStucture;
 import com.project.logistick.DTO.OrderDto;
-import com.project.logistick.DTO.ResponceStucture;
 import com.project.logistick.Entitiesclasses.Cargo;
 import com.project.logistick.Entitiesclasses.Order;
 import com.project.logistick.Services.Cargo_Services;

@@ -5,7 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import com.project.logistick.DTO.ResponceStucture;
+
+import com.project.logistick.DAO.ResponceStucture;
 import com.project.logistick.Entitiesclasses.Carrier;
 import com.project.logistick.Entitiesclasses.Driver_Class;
 import com.project.logistick.Entitiesclasses.Truck;

@@ -1,4 +1,5 @@
 package com.project.logistick.Exceptions;
+import com.project.logistick.DAO.ResponceStucture;
 import com.project.logistick.Entitiesclasses.Address;
 
 import java.util.HashMap;
@@ -12,7 +13,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import com.project.logistick.DTO.ResponceStucture;
+
 import com.project.logistick.Entitiesclasses.Carrier;
 import com.project.logistick.Entitiesclasses.Driver_Class;
 import com.project.logistick.Entitiesclasses.Loading;
