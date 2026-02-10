@@ -9,14 +9,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.project.logistick.DTO.OrderDto;
 import com.project.logistick.DTO.ResponceStucture;
 import com.project.logistick.Entitiesclasses.Cargo;
-import com.project.logistick.Entitiesclasses.Items;
 import com.project.logistick.Entitiesclasses.Order;
 import com.project.logistick.Services.Cargo_Services;
-import com.project.logistick.Services.Items_Service;
 import com.project.logistick.Services.Order_Services;
 import com.project.logistick.Services.UserService;
 import com.project.logistick.login.UserLogin;
@@ -97,13 +94,4 @@ public class User_Controller {
 	   return userservice.updatedetails(oldemail,newemail);
 	}
 	
-	//items placing
-	@Autowired
-	private Items_Service items;
-	@PutMapping("/placing/{name}/{quantity}")
-	public void placingorder( @PathVariable String name,@PathVariable int quantity) {
-		items.placeOrder(name,quantity);	
-	}
-	
-
 }
