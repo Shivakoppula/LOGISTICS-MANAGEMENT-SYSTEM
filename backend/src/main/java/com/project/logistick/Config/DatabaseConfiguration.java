@@ -45,32 +45,47 @@ public class DatabaseConfiguration {
     
     /**
      * Parse DATABASE_URL and create DataSource
-     * Format: postgresql://user:password@host:port/database
+     * Format: postgresql://user:password@host:port/database or postgres://user:password@host:port/database
      */
     private DataSource createDataSourceFromDatabaseUrl(String databaseUrl) {
         try {
-            // Remove the postgresql:// prefix
-            String url = databaseUrl;
-            if (url.startsWith("postgresql://")) {
-                url = "jdbc:" + url;
-            } else if (url.startsWith("postgres://")) {
-                url = url.replace("postgres://", "jdbc:postgresql://");
-            }
-            
-            // Extract credentials
+            String url = databaseUrl.trim();
             String username = "postgres";
             String password = "";
             
+            System.out.println("Parsing DATABASE_URL: " + url.substring(0, Math.min(50, url.length())) + "...");
+            
+            // Handle postgres:// or postgresql:// prefix
+            if (url.startsWith("postgres://")) {
+                url = url.replace("postgres://", "postgresql://");
+            }
+            
+            // Now extract credentials if present
             if (url.contains("@")) {
-                String[] parts = url.split("@");
-                String credentials = parts[0];
+                int atIndex = url.indexOf("@");
+                String credentialsPart = url.substring(0, atIndex);
+                String hostPart = url.substring(atIndex + 1);
                 
-                if (credentials.contains(":")) {
-                    String[] credParts = credentials.split(":");
-                    username = credParts[credParts.length - 2];
-                    password = credParts[credParts.length - 1];
+                // Extract credentials
+                if (credentialsPart.contains(":")) {
+                    int colonIndex = credentialsPart.lastIndexOf(":");
+                    username = credentialsPart.substring(credentialsPart.lastIndexOf("/") + 1, colonIndex);
+                    password = credentialsPart.substring(colonIndex + 1);
+                } else {
+                    username = credentialsPart.substring(credentialsPart.lastIndexOf("/") + 1);
+                }
+                
+                // Reconstruct JDBC URL
+                url = "jdbc:postgresql://" + hostPart;
+            } else {
+                // No credentials, just convert to JDBC format
+                if (url.startsWith("postgresql://")) {
+                    url = "jdbc:" + url;
                 }
             }
+            
+            System.out.println("Parsed DB URL: " + url.substring(0, Math.min(60, url.length())) + "...");
+            System.out.println("Username: " + username);
             
             return DataSourceBuilder.create()
                     .url(url)
@@ -81,6 +96,7 @@ public class DatabaseConfiguration {
         } catch (Exception e) {
             // If parsing fails, fall back to defaults
             System.err.println("Failed to parse DATABASE_URL: " + e.getMessage());
+            e.printStackTrace();
             return DataSourceBuilder.create()
                     .url("jdbc:postgresql://localhost:5432/logstickproject")
                     .username("postgres")
