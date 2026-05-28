@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Logistics Portal</title>
+    <link rel="stylesheet" href="admin-dashboard.css">
+</head>
+<body>
+    <nav class="navbar">
+        <h1>👨‍💼 Admin Dashboard</h1>
+        <div class="user-info">
+            <p id="adminPhone">Welcome, Admin!</p>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="dashboard">
+            <h2>Welcome to Admin Dashboard</h2>
+            <p style="margin-bottom: 30px;">Manage drivers, trucks, and carriers efficiently</p>
+
+            <!-- Main Menu -->
+            <div class="main-menu">
+                <button class="main-menu-btn" onclick="showMenu('driver')">🚗 Driver</button>
+                <button class="main-menu-btn" onclick="showMenu('truck')">🚚 Truck</button>
+                <button class="main-menu-btn" onclick="showMenu('carrier')">🏢 Carrier</button>
+                <button class="main-menu-btn" onclick="showMenu('address')">📍 Address</button>
+                <button class="main-menu-btn" onclick="showMenu('loading')">📦 Loading</button>
+                <button class="main-menu-btn" onclick="showMenu('unloading')">📮 Unloading</button>
+                <button class="main-menu-btn" onclick="showMenu('users')">👥 Users</button>
+                <button class="main-menu-btn" onclick="showMenu('order')">🔄 Order</button>
+            </div>
+
+            <!-- Driver Menu Section -->
+            <div id="driver-menu" class="menu-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Driver Management</h3>
+                <div class="menu-buttons">
+                    <button class="menu-btn" onclick="openForm('saveDriver')">Save Driver</button>
+                    <button class="menu-btn" onclick="openForm('findDriver')">Find Driver</button>
+                    <button class="menu-btn" onclick="openForm('deleteDriver')">Delete Driver</button>
+                    <button class="menu-btn" onclick="openForm('updateDriverByTruck')">Update by Truck/Carrier</button>
+                </div>
+                <button class="back-btn" onclick="backToMenu()">← Back</button>
+            </div>
+
+            <!-- Truck Menu Section -->
+            <div id="truck-menu" class="menu-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Truck Management</h3>
+                <div class="menu-buttons">
+                    <button class="menu-btn" onclick="openForm('saveTruck')">Save Truck</button>
+                    <button class="menu-btn" onclick="openForm('findTruck')">Find Truck</button>
+                    <button class="menu-btn" onclick="openForm('deleteTruck')">Delete Truck</button>
+                    <button class="menu-btn" onclick="openForm('updateTruckByCarrier')">Update by Carrier</button>
+                </div>
+                <button class="back-btn" onclick="backToMenu()">← Back</button>
+            </div>
+
+            <!-- Carrier Menu Section -->
+            <div id="carrier-menu" class="menu-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Carrier Management</h3>
+                <div class="menu-buttons">
+                    <button class="menu-btn" onclick="openForm('saveCarrier')">Save Carrier</button>
+                    <button class="menu-btn" onclick="openForm('findCarrier')">Find Carrier</button>
+                    <button class="menu-btn" onclick="openForm('deleteCarrier')">Delete Carrier</button>
+                </div>
+                <button class="back-btn" onclick="backToMenu()">← Back</button>
+            </div>
+
+            <!-- Address Menu Section -->
+            <div id="address-menu" class="menu-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Address Management</h3>
+                <div class="menu-buttons">
+                    <button class="menu-btn" onclick="openForm('saveAddress')">Save Address</button>
+                    <button class="menu-btn" onclick="openForm('findAddress')">Find Address</button>
+                    <button class="menu-btn" onclick="openForm('deleteAddress')">Delete Address</button>
+                </div>
+                <button class="back-btn" onclick="backToMenu()">← Back</button>
+            </div>
+
+            <!-- Loading Menu Section -->
+            <div id="loading-menu" class="menu-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Loading Management</h3>
+                <div class="menu-buttons">
+                    <button class="menu-btn" onclick="openForm('saveLoadingLocation')">Save Loading Location</button>
+                    <button class="menu-btn" onclick="openForm('findLoadingLocation')">Find Loading Location</button>
+                    <button class="menu-btn" onclick="openForm('deleteLoadingLocation')">Delete Loading Location</button>
+                </div>
+                <button class="back-btn" onclick="backToMenu()">← Back</button>
+            </div>
+
+            <!-- Unloading Menu Section -->
+            <div id="unloading-menu" class="menu-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Unloading Management</h3>
+                <div class="menu-buttons">
+                    <button class="menu-btn" onclick="openForm('saveUnloadingLocation')">Save Unloading Location</button>
+                    <button class="menu-btn" onclick="openForm('findUnloadingLocation')">Find Unloading Location</button>
+                    <button class="menu-btn" onclick="openForm('deleteUnloadingLocation')">Delete Unloading Location</button>
+                </div>
+                <button class="back-btn" onclick="backToMenu()">← Back</button>
+            </div>
+
+            <!-- Order Menu Section -->
+            <div id="order-menu" class="menu-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Order Management</h3>
+                <div class="menu-buttons">
+                    <button class="menu-btn" onclick="openForm('updateCarrierByTruckId')">Update Carrier by Truck ID</button>
+                </div>
+                <button class="back-btn" onclick="backToMenu()">← Back</button>
+            </div>
+
+            <!-- Save Driver Form -->
+            <div id="saveDriver-form" class="form-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Save New Driver</h3>
+                <div id="saveDriver-alert" class="alert"></div>
+                <div id="saveDriver-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                
+                <form id="saveDriverForm" onsubmit="handleSaveDriver(event)">
+                    <div class="form-group">
+                        <label for="driverId">Driver ID</label>
+                        <input type="number" id="driverId" name="id" placeholder="Enter driver ID" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="driverName">Driver Name</label>
+                        <input type="text" id="driverName" name="name" placeholder="Enter driver name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="driverContact">Contact Number</label>
+                        <input type="tel" id="driverContact" name="contact" placeholder="Enter contact number" required>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn">Save Driver</button>
+                        <button type="button" class="cancel-btn" onclick="closeForm('saveDriver')">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Find Driver Form -->
+            <div id="findDriver-form" class="form-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Find Driver</h3>
+                <div id="findDriver-alert" class="alert"></div>
+                <div id="findDriver-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                
+                <form id="findDriverForm" onsubmit="handleFindDriver(event)">
+                    <div class="form-group">
+                        <label for="findDriverId">Driver ID</label>
+                        <input type="number" id="findDriverId" name="id" placeholder="Enter driver ID" required>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn">Find Driver</button>
+                        <button type="button" class="cancel-btn" onclick="closeForm('findDriver')">Cancel</button>
+                    </div>
+                </form>
+
+                <!-- Driver Details Display -->
+                <div id="findDriver-details" style="margin-top: 20px; padding: 20px; background: white; border-radius: 5px; display: none;">
+                    <h4 style="color: #333; margin-bottom: 15px;">Driver Details</h4>
+                    <p><strong>Driver ID:</strong> <span id="detailId"></span></p>
+                    <p><strong>Driver Name:</strong> <span id="detailName"></span></p>
+                    <p><strong>Contact Number:</strong> <span id="detailContact"></span></p>
+                </div>
+            </div>
+
+            <!-- Delete Driver Form -->
+            <div id="deleteDriver-form" class="form-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Delete Driver</h3>
+                <div id="deleteDriver-alert" class="alert"></div>
+                <div id="deleteDriver-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                
+                <form id="deleteDriverForm" onsubmit="handleDeleteDriver(event)">
+                    <div class="form-group">
+                        <label for="deleteDriverId">Driver ID</label>
+                        <input type="number" id="deleteDriverId" name="id" placeholder="Enter driver ID" required>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn" style="background: #dc3545;">Delete Driver</button>
+                        <button type="button" class="cancel-btn" onclick="closeForm('deleteDriver')">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Update Driver by Truck/Carrier Form -->
+            <div id="updateDriverByTruck-form" class="form-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Update Driver by Truck/Carrier</h3>
+                <div id="updateDriverByTruck-alert" class="alert"></div>
+                <div id="updateDriverByTruck-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                
+                <form id="updateDriverByTruckForm" onsubmit="handleUpdateDriverByTruck(event)">
+                    <div class="form-group">
+                        <label for="truckCarrierId">Truck/Carrier ID</label>
+                        <input type="text" id="truckCarrierId" name="truckCarrierId" placeholder="Enter truck/carrier ID" required>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn">Update Driver</button>
+                        <button type="button" class="cancel-btn" onclick="closeForm('updateDriverByTruck')">Cancel</button>
+                    </div>
+                </form>
+
+                <!-- Updated Driver Details Display -->
+                <div id="updateDriverByTruck-details" style="margin-top: 20px; padding: 20px; background: #f0f8ff; border-left: 4px solid #667eea; border-radius: 5px; display: none;">
+                    <h4 style="color: #333; margin-bottom: 15px;">📋 Updated Driver Details</h4>
+                    <div style="background: white; padding: 15px; border-radius: 5px; line-height: 2;">
+                        <p><strong>Driver ID:</strong> <span id="updateDetailId" style="color: #667eea; font-weight: 600;"></span></p>
+                        <p><strong>Driver Name:</strong> <span id="updateDetailName" style="color: #667eea; font-weight: 600;"></span></p>
+                        <p><strong>Contact Number:</strong> <span id="updateDetailContact" style="color: #667eea; font-weight: 600;"></span></p>
+                        <hr style="margin: 10px 0; border: none; border-top: 1px solid #eee;">
+                        <p><strong>🚚 Truck Details:</strong></p>
+                        <div style="margin-left: 20px; background: #f9f9f9; padding: 10px; border-radius: 3px;">
+                            <p style="margin: 5px 0;"><strong>Truck ID:</strong> <span id="updateDetailTruckId" style="color: #667eea; font-weight: 600;"></span></p>
+                            <p style="margin: 5px 0;"><strong>Truck Name:</strong> <span id="updateDetailTruckName" style="color: #667eea; font-weight: 600;"></span></p>
+                            <p style="margin: 5px 0;"><strong>Truck Capacity:</strong> <span id="updateDetailTruckCapacity" style="color: #667eea; font-weight: 600;"></span></p>
+                        </div>
+                        <hr style="margin: 10px 0; border: none; border-top: 1px solid #eee;">
+                        <p><strong>🏢 Carrier Details:</strong></p>
+                        <div style="margin-left: 20px; background: #f9f9f9; padding: 10px; border-radius: 3px;">
+                            <p style="margin: 5px 0;"><strong>Carrier ID:</strong> <span id="updateDetailCarrierId" style="color: #667eea; font-weight: 600;"></span></p>
+                            <p style="margin: 5px 0;"><strong>Carrier Name:</strong> <span id="updateDetailCarrierName" style="color: #667eea; font-weight: 600;"></span></p>
+                            <p style="margin: 5px 0;"><strong>Carrier Contact:</strong> <span id="updateDetailCarrierContact" style="color: #667eea; font-weight: 600;"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Save Truck Form -->
+            <div id="saveTruck-form" class="form-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Save New Truck</h3>
+                <div id="saveTruck-alert" class="alert"></div>
+                <div id="saveTruck-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                
+                <form id="saveTruckForm" onsubmit="handleSaveTruck(event)">
+                    <div class="form-group">
+                        <label for="truckId">Truck ID</label>
+                        <input type="number" id="truckId" name="id" placeholder="Enter truck ID" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="truckName">Truck Name</label>
+                        <input type="text" id="truckName" name="name" placeholder="Enter truck name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="truckCapacity">Truck Capacity</label>
+                        <input type="text" id="truckCapacity" name="capacity" placeholder="Enter truck capacity" required>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn">Save Truck</button>
+                        <button type="button" class="cancel-btn" onclick="closeForm('saveTruck')">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Find Truck Form -->
+            <div id="findTruck-form" class="form-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Find Truck</h3>
+                <div id="findTruck-alert" class="alert"></div>
+                <div id="findTruck-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                
+                <form id="findTruckForm" onsubmit="handleFindTruck(event)">
+                    <div class="form-group">
+                        <label for="findTruckId">Truck ID</label>
+                        <input type="number" id="findTruckId" name="id" placeholder="Enter truck ID" required>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn">Find Truck</button>
+                        <button type="button" class="cancel-btn" onclick="closeForm('findTruck')">Cancel</button>
+                    </div>
+                </form>
+
+                <!-- Truck Details Display -->
+                <div id="findTruck-details" style="margin-top: 20px; padding: 20px; background: white; border-radius: 5px; display: none;">
+                    <h4 style="color: #333; margin-bottom: 15px;">Truck Details</h4>
+                    <p><strong>Truck ID:</strong> <span id="detailTruckId"></span></p>
+                    <p><strong>Truck Name:</strong> <span id="detailTruckName"></span></p>
+                    <p><strong>Truck Capacity:</strong> <span id="detailTruckCapacity"></span></p>
+                </div>
+            </div>
+
+            <!-- Delete Truck Form -->
+            <div id="deleteTruck-form" class="form-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Delete Truck</h3>
+                <div id="deleteTruck-alert" class="alert"></div>
+                <div id="deleteTruck-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                
+                <form id="deleteTruckForm" onsubmit="handleDeleteTruck(event)">
+                    <div class="form-group">
+                        <label for="deleteTruckId">Truck ID</label>
+                        <input type="number" id="deleteTruckId" name="id" placeholder="Enter truck ID" required>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn" style="background: #dc3545;">Delete Truck</button>
+                        <button type="button" class="cancel-btn" onclick="closeForm('deleteTruck')">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Update Truck by Carrier Form -->
+            <div id="updateTruckByCarrier-form" class="form-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Update Truck by Carrier</h3>
+                <div id="updateTruckByCarrier-alert" class="alert"></div>
+                <div id="updateTruckByCarrier-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                
+                <form id="updateTruckByCarrierForm" onsubmit="handleUpdateTruckByCarrier(event)">
+                    <div class="form-group">
+                        <label for="updateTruckCarrierId">Carrier ID</label>
+                        <input type="text" id="updateTruckCarrierId" name="carrierId" placeholder="Enter carrier ID" required>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn">Update Truck</button>
+                        <button type="button" class="cancel-btn" onclick="closeForm('updateTruckByCarrier')">Cancel</button>
+                    </div>
+                </form>
+
+                <!-- Updated Truck Details Display -->
+                <div id="updateTruckByCarrier-details" style="margin-top: 20px; padding: 20px; background: #f0f8ff; border-left: 4px solid #667eea; border-radius: 5px; display: none;">
+                    <h4 style="color: #333; margin-bottom: 15px;">📋 Updated Truck Details</h4>
+                    <div style="background: white; padding: 15px; border-radius: 5px; line-height: 2;">
+                        <p><strong>Truck ID:</strong> <span id="updateTruckDetailId" style="color: #667eea; font-weight: 600;"></span></p>
+                        <p><strong>Truck Name:</strong> <span id="updateTruckDetailName" style="color: #667eea; font-weight: 600;"></span></p>
+                        <p><strong>Truck Capacity:</strong> <span id="updateTruckDetailCapacity" style="color: #667eea; font-weight: 600;"></span></p>
+                        <hr style="margin: 10px 0; border: none; border-top: 1px solid #eee;">
+                        <p><strong>🏢 Carrier Details:</strong></p>
+                        <div style="margin-left: 20px; background: #f9f9f9; padding: 10px; border-radius: 3px;">
+                            <p style="margin: 5px 0;"><strong>Carrier ID:</strong> <span id="updateTruckCarrierDetailId" style="color: #667eea; font-weight: 600;"></span></p>
+                            <p style="margin: 5px 0;"><strong>Carrier Name:</strong> <span id="updateTruckCarrierDetailName" style="color: #667eea; font-weight: 600;"></span></p>
+                            <p style="margin: 5px 0;"><strong>Carrier Contact:</strong> <span id="updateTruckCarrierDetailContact" style="color: #667eea; font-weight: 600;"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Save Carrier Form -->
+            <div id="saveCarrier-form" class="form-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Save New Carrier</h3>
+                <div id="saveCarrier-alert" class="alert"></div>
+                <div id="saveCarrier-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                
+                <form id="saveCarrierForm" onsubmit="handleSaveCarrier(event)">
+                    <div class="form-group">
+                        <label for="carrierId">Carrier ID</label>
+                        <input type="number" id="carrierId" name="id" placeholder="Enter carrier ID" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="carrierName">Carrier Name</label>
+                        <input type="text" id="carrierName" name="name" placeholder="Enter carrier name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="carrierContact">Contact Number</label>
+                        <input type="tel" id="carrierContact" name="contact" placeholder="Enter contact number" required>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn">Save Carrier</button>
+                        <button type="button" class="cancel-btn" onclick="closeForm('saveCarrier')">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Find Carrier Form -->
+            <div id="findCarrier-form" class="form-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Find Carrier</h3>
+                <div id="findCarrier-alert" class="alert"></div>
+                <div id="findCarrier-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                
+                <form id="findCarrierForm" onsubmit="handleFindCarrier(event)">
+                    <div class="form-group">
+                        <label for="findCarrierId">Carrier ID</label>
+                        <input type="number" id="findCarrierId" name="id" placeholder="Enter carrier ID" required>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn">Find Carrier</button>
+                        <button type="button" class="cancel-btn" onclick="closeForm('findCarrier')">Cancel</button>
+                    </div>
+                </form>
+
+                <!-- Carrier Details Display -->
+                <div id="findCarrier-details" style="margin-top: 20px; padding: 20px; background: white; border-radius: 5px; display: none;">
+                    <h4 style="color: #333; margin-bottom: 15px;">Carrier Details</h4>
+                    <p><strong>Carrier ID:</strong> <span id="detailCarrierId"></span></p>
+                    <p><strong>Carrier Name:</strong> <span id="detailCarrierName"></span></p>
+                    <p><strong>Contact Number:</strong> <span id="detailCarrierContact"></span></p>
+                </div>
+            </div>
+
+            <!-- Delete Carrier Form -->
+            <div id="deleteCarrier-form" class="form-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Delete Carrier</h3>
+                <div id="deleteCarrier-alert" class="alert"></div>
+                <div id="deleteCarrier-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                
+                <form id="deleteCarrierForm" onsubmit="handleDeleteCarrier(event)">
+                    <div class="form-group">
+                        <label for="deleteCarrierId">Carrier ID</label>
+                        <input type="number" id="deleteCarrierId" name="id" placeholder="Enter carrier ID" required>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn" style="background: #dc3545;">Delete Carrier</button>
+                        <button type="button" class="cancel-btn" onclick="closeForm('deleteCarrier')">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Save Address Form -->
+            <div id="saveAddress-form" class="form-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Save New Address</h3>
+                <div id="saveAddress-alert" class="alert"></div>
+                <div id="saveAddress-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                
+                <form id="saveAddressForm" onsubmit="handleSaveAddress(event)">
+                    <div class="form-group">
+                        <label for="addressId">Address ID</label>
+                        <input type="number" id="addressId" name="id" placeholder="Enter address ID" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addressStreet">Street</label>
+                        <input type="text" id="addressStreet" name="street" placeholder="Enter street address" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addressCity">City</label>
+                        <input type="text" id="addressCity" name="city" placeholder="Enter city" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addressPincode">Pincode</label>
+                        <input type="text" id="addressPincode" name="pincode" placeholder="Enter pincode" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addressState">State</label>
+                        <input type="text" id="addressState" name="state" placeholder="Enter state" required>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn">Save Address</button>
+                        <button type="button" class="cancel-btn" onclick="closeForm('saveAddress')">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Find Address Form -->
+            <div id="findAddress-form" class="form-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Find Address</h3>
+                <div id="findAddress-alert" class="alert"></div>
+                <div id="findAddress-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                
+                <form id="findAddressForm" onsubmit="handleFindAddress(event)">
+                    <div class="form-group">
+                        <label for="findAddressId">Address ID</label>
+                        <input type="number" id="findAddressId" name="id" placeholder="Enter address ID" required>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn">Find Address</button>
+                        <button type="button" class="cancel-btn" onclick="closeForm('findAddress')">Cancel</button>
+                    </div>
+                </form>
+
+                <!-- Address Details Display -->
+                <div id="findAddress-details" style="margin-top: 20px; padding: 20px; background: white; border-radius: 5px; display: none;">
+                    <h4 style="color: #333; margin-bottom: 15px;">Address Details</h4>
+                    <p><strong>Address ID:</strong> <span id="detailAddressId"></span></p>
+                    <p><strong>Street:</strong> <span id="detailAddressStreet"></span></p>
+                    <p><strong>City:</strong> <span id="detailAddressCity"></span></p>
+                    <p><strong>Pincode:</strong> <span id="detailAddressPincode"></span></p>
+                    <p><strong>State:</strong> <span id="detailAddressState"></span></p>
+                </div>
+            </div>
+
+            <!-- Delete Address Form -->
+            <div id="deleteAddress-form" class="form-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Delete Address</h3>
+                <div id="deleteAddress-alert" class="alert"></div>
+                <div id="deleteAddress-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                
+                <form id="deleteAddressForm" onsubmit="handleDeleteAddress(event)">
+                    <div class="form-group">
+                        <label for="deleteAddressId">Address ID</label>
+                        <input type="number" id="deleteAddressId" name="id" placeholder="Enter address ID" required>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn" style="background: #dc3545;">Delete Address</button>
+                        <button type="button" class="cancel-btn" onclick="closeForm('deleteAddress')">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Save Loading Location Form -->
+            <div id="saveLoadingLocation-form" class="form-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Save Loading Location</h3>
+                <div id="saveLoadingLocation-alert" class="alert"></div>
+                <div id="saveLoadingLocation-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                
+                <form id="saveLoadingLocationForm" onsubmit="handleSaveLoadingLocation(event)">
+                    <div class="form-group">
+                        <label for="loadingLocationId">Loading ID</label>
+                        <input type="number" id="loadingLocationId" name="id" placeholder="Enter loading ID" required>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn">Save Loading Location</button>
+                        <button type="button" class="cancel-btn" onclick="closeForm('saveLoadingLocation')">Cancel</button>
+                    </div>
+                </form>
+
+                <!-- Save Loading Location Details Display -->
+                <div id="saveLoadingLocation-details" style="margin-top: 20px; padding: 20px; background: white; border-radius: 5px; display: none;">
+                    <h4 style="color: #333; margin-bottom: 15px;">Loading Location Details</h4>
+                    <p><strong>Loading ID:</strong> <span id="detailSaveLoadingLocationId"></span></p>
+                    <p><strong>Date:</strong> <span id="detailSaveLoadingLocationDate"></span></p>
+                    <p><strong>Time:</strong> <span id="detailSaveLoadingLocationTime"></span></p>
+                    <p><strong>Address ID:</strong> <span id="detailSaveLoadingLocationAddressId"></span></p>
+                </div>
+            </div>
+
+            <!-- Find Loading Location Form -->
+            <div id="findLoadingLocation-form" class="form-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Find Loading Location</h3>
+                <div id="findLoadingLocation-alert" class="alert"></div>
+                <div id="findLoadingLocation-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                
+                <form id="findLoadingLocationForm" onsubmit="handleFindLoadingLocation(event)">
+                    <div class="form-group">
+                        <label for="findLoadingLocationId">Loading ID</label>
+                        <input type="number" id="findLoadingLocationId" name="id" placeholder="Enter loading ID" required>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn">Find Loading Location</button>
+                        <button type="button" class="cancel-btn" onclick="closeForm('findLoadingLocation')">Cancel</button>
+                    </div>
+                </form>
+
+                <!-- Loading Location Details Display -->
+                <div id="findLoadingLocation-details" style="margin-top: 20px; padding: 20px; background: white; border-radius: 5px; display: none;">
+                    <h4 style="color: #333; margin-bottom: 15px;">Loading Location Details</h4>
+                    <p><strong>Loading ID:</strong> <span id="detailLoadingLocationId"></span></p>
+                    <p><strong>Date:</strong> <span id="detailLoadingLocationDate"></span></p>
+                    <p><strong>Time:</strong> <span id="detailLoadingLocationTime"></span></p>
+                    <p><strong>Address ID:</strong> <span id="detailLoadingLocationAddressId"></span></p>
+                </div>
+            </div>
+
+            <!-- Delete Loading Location Form -->
+            <div id="deleteLoadingLocation-form" class="form-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Delete Loading Location</h3>
+                <div id="deleteLoadingLocation-alert" class="alert"></div>
+                <div id="deleteLoadingLocation-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                
+                <form id="deleteLoadingLocationForm" onsubmit="handleDeleteLoadingLocation(event)">
+                    <div class="form-group">
+                        <label for="deleteLoadingLocationId">Loading ID</label>
+                        <input type="number" id="deleteLoadingLocationId" name="id" placeholder="Enter loading ID" required>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn" style="background: #dc3545;">Delete Loading Location</button>
+                        <button type="button" class="cancel-btn" onclick="closeForm('deleteLoadingLocation')">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Save Unloading Location Form -->
+            <div id="saveUnloadingLocation-form" class="form-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Save Unloading Location</h3>
+                <div id="saveUnloadingLocation-alert" class="alert"></div>
+                <div id="saveUnloadingLocation-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                
+                <form id="saveUnloadingLocationForm" onsubmit="handleSaveUnloadingLocation(event)">
+                    <div class="form-group">
+                        <label for="unloadingLocationId">Unloading ID</label>
+                        <input type="number" id="unloadingLocationId" name="id" placeholder="Enter unloading ID" required>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn">Save Unloading Location</button>
+                        <button type="button" class="cancel-btn" onclick="closeForm('saveUnloadingLocation')">Cancel</button>
+                    </div>
+                </form>
+
+                <!-- Save Unloading Location Details Display -->
+                <div id="saveUnloadingLocation-details" style="margin-top: 20px; padding: 20px; background: white; border-radius: 5px; display: none;">
+                    <h4 style="color: #333; margin-bottom: 15px;">Unloading Location Details</h4>
+                    <p><strong>Unloading ID:</strong> <span id="detailSaveUnloadingLocationId"></span></p>
+                    <p><strong>Date:</strong> <span id="detailSaveUnloadingLocationDate"></span></p>
+                    <p><strong>Time:</strong> <span id="detailSaveUnloadingLocationTime"></span></p>
+                    <p><strong>Address ID:</strong> <span id="detailSaveUnloadingLocationAddressId"></span></p>
+                </div>
+            </div>
+
+            <!-- Find Unloading Location Form -->
+            <div id="findUnloadingLocation-form" class="form-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Find Unloading Location</h3>
+                <div id="findUnloadingLocation-alert" class="alert"></div>
+                <div id="findUnloadingLocation-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                
+                <form id="findUnloadingLocationForm" onsubmit="handleFindUnloadingLocation(event)">
+                    <div class="form-group">
+                        <label for="findUnloadingLocationId">Unloading ID</label>
+                        <input type="number" id="findUnloadingLocationId" name="id" placeholder="Enter unloading ID" required>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn">Find Unloading Location</button>
+                        <button type="button" class="cancel-btn" onclick="closeForm('findUnloadingLocation')">Cancel</button>
+                    </div>
+                </form>
+
+                <!-- Unloading Location Details Display -->
+                <div id="findUnloadingLocation-details" style="margin-top: 20px; padding: 20px; background: white; border-radius: 5px; display: none;">
+                    <h4 style="color: #333; margin-bottom: 15px;">Unloading Location Details</h4>
+                    <p><strong>Address ID:</strong> <span id="detailUnloadingLocationId"></span></p>
+                    <p><strong>Street:</strong> <span id="detailUnloadingLocationStreet"></span></p>
+                    <p><strong>City:</strong> <span id="detailUnloadingLocationCity"></span></p>
+                    <p><strong>Pincode:</strong> <span id="detailUnloadingLocationPincode"></span></p>
+                    <p><strong>State:</strong> <span id="detailUnloadingLocationState"></span></p>
+                </div>
+            </div>
+
+            <!-- Delete Unloading Location Form -->
+            <div id="deleteUnloadingLocation-form" class="form-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Delete Unloading Location</h3>
+                <div id="deleteUnloadingLocation-alert" class="alert"></div>
+                <div id="deleteUnloadingLocation-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                
+                <form id="deleteUnloadingLocationForm" onsubmit="handleDeleteUnloadingLocation(event)">
+                    <div class="form-group">
+                        <label for="deleteUnloadingLocationId">Unloading ID</label>
+                        <input type="number" id="deleteUnloadingLocationId" name="id" placeholder="Enter unloading ID" required>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn" style="background: #dc3545;">Delete Unloading Location</button>
+                        <button type="button" class="cancel-btn" onclick="closeForm('deleteUnloadingLocation')">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Users Menu Section -->
+            <div id="users-menu" class="menu-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Users Management</h3>
+                <div class="menu-buttons">
+                    <button class="menu-btn" onclick="openForm('getAllUsers')">Get All Users</button>
+                    <button class="menu-btn" onclick="openForm('blockUser')">Block User</button>
+                </div>
+                <button class="back-btn" onclick="closeMenu('users')">Back</button>
+            </div>
+
+            <!-- Get All Users Form -->
+            <div id="getAllUsers-form" class="form-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Get All Users</h3>
+                <div id="getAllUsers-alert" class="alert"></div>
+                <div id="getAllUsers-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                
+                <form id="getAllUsersForm" onsubmit="handleGetAllUsers(event)">
+                    <div class="form-group">
+                        <label for="adminPhoneInput">Admin Phone Number</label>
+                        <input type="tel" id="adminPhoneInput" name="phone" placeholder="Enter admin phone number" required>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn">Load All Users</button>
+                        <button type="button" class="cancel-btn" onclick="closeForm('getAllUsers')">Cancel</button>
+                    </div>
+                </form>
+
+                <!-- Users List Display -->
+                <div id="getAllUsers-details" style="margin-top: 20px; padding: 20px; background: white; border-radius: 5px; display: none;">
+                    <h4 style="color: #333; margin-bottom: 15px;">Users List</h4>
+                    <div id="usersList"></div>
+                </div>
+            </div>
+
+            <!-- Block User Form -->
+            <div id="blockUser-form" class="form-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Delete User</h3>
+                <div id="blockUser-alert" class="alert"></div>
+                <div id="blockUser-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                
+                <form id="blockUserForm" onsubmit="handleBlockUser(event)">
+                    <div class="form-group">
+                        <label for="deleteUserEmail">User Email</label>
+                        <input type="email" id="deleteUserEmail" name="email" placeholder="Enter user email" required>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn" style="background: #dc3545;">Delete User</button>
+                        <button type="button" class="cancel-btn" onclick="closeForm('blockUser')">Cancel</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Update Carrier by Truck ID Form -->
+            <div id="updateCarrierByTruckId-form" class="form-section">
+                <h3 style="color: #333; margin-bottom: 20px;">Update Carrier by Truck ID</h3>
+                <div id="updateCarrierByTruckId-alert" class="alert"></div>
+                <div id="updateCarrierByTruckId-loading" class="loading">
+                    <div class="spinner"></div>
+                </div>
+                
+                <form id="updateCarrierByTruckIdForm" onsubmit="handleUpdateCarrierByTruckId(event)">
+                    <div class="form-group">
+                        <label for="orderIdForCarrier">Order ID</label>
+                        <input type="number" id="orderIdForCarrier" name="orderId" placeholder="Enter order ID" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="truckIdForCarrier">Truck ID</label>
+                        <input type="number" id="truckIdForCarrier" name="truckId" placeholder="Enter truck ID" required>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="submit" class="submit-btn">Update Carrier</button>
+                        <button type="button" class="cancel-btn" onclick="closeForm('updateCarrierByTruckId')">Cancel</button>
+                    </div>
+                </form>
+
+                <!-- Updated Carrier Details Display -->
+                <div id="updateCarrierByTruckId-details" style="margin-top: 20px; padding: 20px; background: #f0f8ff; border-left: 4px solid #667eea; border-radius: 5px; display: none;">
+                    <h4 style="color: #333; margin-bottom: 15px;">📋 Updated Order & Carrier Details</h4>
+                    <div style="background: white; padding: 15px; border-radius: 5px; line-height: 2;">
+                        <!-- Order Details Section -->
+                        <p><strong>Order ID:</strong> <span id="carrierOrderId" style="color: #667eea; font-weight: 600;"></span></p>
+                        <p><strong>Order Status:</strong> <span id="carrierOrderStatus" style="color: #667eea; font-weight: 600;"></span></p>
+                        <hr style="margin: 10px 0; border: none; border-top: 1px solid #eee;">
+                        
+                        <!-- Cargo Details Section -->
+                        <p><strong>📦 Cargo Details:</strong></p>
+                        <div style="margin-left: 20px; background: #f9f9f9; padding: 10px; border-radius: 3px;">
+                            <p style="margin: 5px 0;"><strong>Cargo ID:</strong> <span id="carrierCargoId" style="color: #667eea; font-weight: 600;"></span></p>
+                            <p style="margin: 5px 0;"><strong>Cargo Name:</strong> <span id="carrierCargoName" style="color: #667eea; font-weight: 600;"></span></p>
+                            <p style="margin: 5px 0;"><strong>Description:</strong> <span id="carrierCargoDescription" style="color: #667eea; font-weight: 600;"></span></p>
+                            <p style="margin: 5px 0;"><strong>Weight:</strong> <span id="carrierCargoWeight" style="color: #667eea; font-weight: 600;"></span></p>
+                            <p style="margin: 5px 0;"><strong>Count:</strong> <span id="carrierCargoCount" style="color: #667eea; font-weight: 600;"></span></p>
+                        </div>
+                        <hr style="margin: 10px 0; border: none; border-top: 1px solid #eee;">
+                        
+                        <!-- Loading Address Section -->
+                        <p><strong>📍 Loading Address:</strong></p>
+                        <div style="margin-left: 20px; background: #f9f9f9; padding: 10px; border-radius: 3px;">
+                            <p style="margin: 5px 0;"><strong>Street:</strong> <span id="carrierLoadingStreet" style="color: #667eea; font-weight: 600;"></span></p>
+                            <p style="margin: 5px 0;"><strong>City:</strong> <span id="carrierLoadingCity" style="color: #667eea; font-weight: 600;"></span></p>
+                            <p style="margin: 5px 0;"><strong>Pincode:</strong> <span id="carrierLoadingPincode" style="color: #667eea; font-weight: 600;"></span></p>
+                            <p style="margin: 5px 0;"><strong>State:</strong> <span id="carrierLoadingState" style="color: #667eea; font-weight: 600;"></span></p>
+                        </div>
+                        <hr style="margin: 10px 0; border: none; border-top: 1px solid #eee;">
+                        
+                        <!-- Unloading Address Section -->
+                        <p><strong>📍 Unloading Address:</strong></p>
+                        <div style="margin-left: 20px; background: #f9f9f9; padding: 10px; border-radius: 3px;">
+                            <p style="margin: 5px 0;"><strong>Street:</strong> <span id="carrierUnloadingStreet" style="color: #667eea; font-weight: 600;"></span></p>
+                            <p style="margin: 5px 0;"><strong>City:</strong> <span id="carrierUnloadingCity" style="color: #667eea; font-weight: 600;"></span></p>
+                            <p style="margin: 5px 0;"><strong>Pincode:</strong> <span id="carrierUnloadingPincode" style="color: #667eea; font-weight: 600;"></span></p>
+                            <p style="margin: 5px 0;"><strong>State:</strong> <span id="carrierUnloadingState" style="color: #667eea; font-weight: 600;"></span></p>
+                        </div>
+                        <hr style="margin: 10px 0; border: none; border-top: 1px solid #eee;">
+                        
+                        <!-- Truck Details Section -->
+                        <p><strong>🚚 Truck Details:</strong></p>
+                        <div style="margin-left: 20px; background: #f9f9f9; padding: 10px; border-radius: 3px;">
+                            <p style="margin: 5px 0;"><strong>Truck ID:</strong> <span id="carrierTruckId" style="color: #667eea; font-weight: 600;"></span></p>
+                            <p style="margin: 5px 0;"><strong>Truck Name:</strong> <span id="carrierTruckName" style="color: #667eea; font-weight: 600;"></span></p>
+                            <p style="margin: 5px 0;"><strong>Truck Capacity:</strong> <span id="carrierTruckCapacity" style="color: #667eea; font-weight: 600;"></span></p>
+                        </div>
+                        <hr style="margin: 10px 0; border: none; border-top: 1px solid #eee;">
+                        
+                        <!-- Driver Details Section -->
+                        <p><strong>🚗 Driver Details:</strong></p>
+                        <div style="margin-left: 20px; background: #f9f9f9; padding: 10px; border-radius: 3px;">
+                            <p style="margin: 5px 0;"><strong>Driver ID:</strong> <span id="carrierDriverId" style="color: #667eea; font-weight: 600;"></span></p>
+                            <p style="margin: 5px 0;"><strong>Driver Name:</strong> <span id="carrierDriverName" style="color: #667eea; font-weight: 600;"></span></p>
+                            <p style="margin: 5px 0;"><strong>Driver Contact:</strong> <span id="carrierDriverContact" style="color: #667eea; font-weight: 600;"></span></p>
+                        </div>
+                        <hr style="margin: 10px 0; border: none; border-top: 1px solid #eee;">
+                        
+                        <!-- Carrier Details Section -->
+                        <p><strong>🏢 Carrier Details:</strong></p>
+                        <div style="margin-left: 20px; background: #f9f9f9; padding: 10px; border-radius: 3px;">
+                            <p style="margin: 5px 0;"><strong>Carrier ID:</strong> <span id="carrierByTruckId" style="color: #667eea; font-weight: 600;"></span></p>
+                            <p style="margin: 5px 0;"><strong>Carrier Name:</strong> <span id="carrierByTruckName" style="color: #667eea; font-weight: 600;"></span></p>
+                            <p style="margin: 5px 0;"><strong>Carrier Contact:</strong> <span id="carrierByTruckContact" style="color: #667eea; font-weight: 600;"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="admin-dashboard.js"></script>
+</body>
+</html>
+           
+    <!-- </script> -->
+</body>
+</html>
